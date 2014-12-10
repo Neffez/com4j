@@ -238,6 +238,8 @@ abstract class ComMethod {
                     return NativeType.BSTR_ByRef;
                   if(Integer.class==c || Enum.class.isAssignableFrom(c))
                     return NativeType.Int32_ByRef;
+                  if(Double.class==c)
+                      return NativeType.Double_ByRef;
                   if(Boolean.class==c)
                     return NativeType.VariantBool_ByRef;
                   if(Buffer.class.isAssignableFrom(c))

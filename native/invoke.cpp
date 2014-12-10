@@ -6,10 +6,10 @@
 #include <stdio.h>
 #include "../libffi/include/ffi.h"
 
-/**  
- * Original auther  (C) Kohsuke Kawaguchi (kk@kohsuke.org)
- * Modified by      (C) Michael Schnell (scm, 2008, Michael-Schnell@gmx.de)
- * Modified by      (C) Mike Poindexter (staticsnow@gmail.com, 2009)
+/**	 
+ * Original auther	(C) Kohsuke Kawaguchi (kk@kohsuke.org)
+ * Modified by		(C) Michael Schnell (scm, 2008, Michael-Schnell@gmx.de)
+ * Modified by		(C) Mike Poindexter (staticsnow@gmail.com, 2009)
  */
 
 #ifdef X86_WIN32
@@ -23,9 +23,9 @@
 typedef union arg_value {
 	INT64		v_int64;
 	INT32		v_int32;
-    INT16		v_int16;
-    INT8		v_int8;
-    float		v_float;
+	INT16		v_int16;
+	INT8		v_int8;
+	float		v_float;
 	double		v_double;
 	void*		v_ptr;
 } arg_value;
@@ -59,20 +59,20 @@ ffi_error(JNIEnv* env, const char* op, ffi_status status) {
   char msg[256];
   switch(status) {
   case FFI_BAD_ABI:
-    _snprintf(msg, sizeof(msg), "Invalid calling convention");
-    comexception_new(env, env->NewStringUTF(msg), env->NewStringUTF(__FILE__), (jint)__LINE__);
-    return JNI_TRUE;
-  case FFI_BAD_TYPEDEF:
-    _snprintf(msg, sizeof(msg),
-             "Invalid structure definition (native typedef error)");
+	_snprintf(msg, sizeof(msg), "Invalid calling convention");
 	comexception_new(env, env->NewStringUTF(msg), env->NewStringUTF(__FILE__), (jint)__LINE__);
-    return JNI_TRUE;
+	return JNI_TRUE;
+  case FFI_BAD_TYPEDEF:
+	_snprintf(msg, sizeof(msg),
+			 "Invalid structure definition (native typedef error)");
+	comexception_new(env, env->NewStringUTF(msg), env->NewStringUTF(__FILE__), (jint)__LINE__);
+	return JNI_TRUE;
   default:
-    _snprintf(msg, sizeof(msg), "%s failed (%d)", op, status);
-    comexception_new(env, env->NewStringUTF(msg), env->NewStringUTF(__FILE__), (jint)__LINE__);
-    return JNI_TRUE;
+	_snprintf(msg, sizeof(msg), "%s failed (%d)", op, status);
+	comexception_new(env, env->NewStringUTF(msg), env->NewStringUTF(__FILE__), (jint)__LINE__);
+	return JNI_TRUE;
   case FFI_OK:
-    return JNI_FALSE;
+	return JNI_FALSE;
   }
 }
 
@@ -122,7 +122,7 @@ jobject Environment::invoke( void* pComObject, ComMethod method, jobjectArray ar
 			case cvBSTR:
 				retUnm = new BSTRUnmarshaller(NULL);
 				break;
-			
+
 			case cvHRESULT:
 				// this is a special case which we handle later
 				// It must be retIndex==-1 when retConv==cvHRESULT .
@@ -279,6 +279,18 @@ jobject Environment::invoke( void* pComObject, ComMethod method, jobjectArray ar
 				ffi_values[comParamIndex + 1] = &c_args[comParamIndex].v_ptr;
 				break;
 
+			case cvComObject_byRef:
+				if(arg==NULL) {
+					c_args[comParamIndex].v_ptr = NULL;
+				} else {
+					unm = new LongUnmarshaller(env,jholder(arg)->get(env));
+					add(new OutParamHandler( jholder(arg), unm ) );
+					c_args[comParamIndex].v_ptr = unm->addr();
+				}
+				ffi_types[comParamIndex + 1] = &ffi_type_pointer;
+				ffi_values[comParamIndex + 1] = &c_args[comParamIndex].v_ptr;
+				break;
+
 			case cvINT64:
 				c_args[comParamIndex].v_int64 = javaLangNumber_longValue(env,arg);
 				ffi_types[comParamIndex + 1] = &ffi_type_sint64;
@@ -408,7 +420,6 @@ jobject Environment::invoke( void* pComObject, ComMethod method, jobjectArray ar
 				} else {
 					jstring strRep = javaMathBigDecimal_toString(env,jholder(arg)->get(env));
 					CComCurrency cy((LPCSTR)JString(env,strRep));
-					
 					unm = new CurrencyUnmarshaller(cy);
 					add(new OutParamHandler( jholder(arg), unm ));
 					c_args[comParamIndex].v_ptr = unm->addr();
