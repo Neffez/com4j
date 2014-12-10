@@ -6,10 +6,10 @@
 #include <stdio.h>
 #include "../libffi/include/ffi.h"
 
-/**	 
- * Original auther	(C) Kohsuke Kawaguchi (kk@kohsuke.org)
- * Modified by		(C) Michael Schnell (scm, 2008, Michael-Schnell@gmx.de)
- * Modified by		(C) Mike Poindexter (staticsnow@gmail.com, 2009)
+/**
+ * Original auther (C) Kohsuke Kawaguchi (kk@kohsuke.org)
+ * Modified by (C) Michael Schnell (scm, 2008, Michael-Schnell@gmx.de)
+ * Modified by (C) Mike Poindexter (staticsnow@gmail.com, 2009)
  */
 
 #ifdef X86_WIN32
