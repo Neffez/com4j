@@ -279,6 +279,18 @@ jobject Environment::invoke( void* pComObject, ComMethod method, jobjectArray ar
 				ffi_values[comParamIndex + 1] = &c_args[comParamIndex].v_ptr;
 				break;
 
+			case cvComObject_byRef:
+				if(arg==NULL) {
+					c_args[comParamIndex].v_ptr = NULL;
+				} else {
+					unm = new LongUnmarshaller(env,jholder(arg)->get(env));
+					add(new OutParamHandler( jholder(arg), unm ) );
+					c_args[comParamIndex].v_ptr = unm->addr();
+				}
+				ffi_types[comParamIndex + 1] = &ffi_type_pointer;
+				ffi_values[comParamIndex + 1] = &c_args[comParamIndex].v_ptr;
+				break;
+
 			case cvINT64:
 				c_args[comParamIndex].v_int64 = javaLangNumber_longValue(env,arg);
 				ffi_types[comParamIndex + 1] = &ffi_type_sint64;
