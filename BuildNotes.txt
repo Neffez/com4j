@@ -29,3 +29,10 @@ To build native library:
 
 3. Build each of {Debug,Release} and {Win32,x64} in Visual Studio
 
+To build the JAR:
+
+    JAVA_HOME='C:\Program Files\Java\jdk1.8.0_XX'
+    export JAVA_HOME
+
+    mvn package -P release
+
