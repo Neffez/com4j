@@ -213,7 +213,12 @@ final class Wrapper implements InvocationHandler, Com4jObject {
         if(dispid!=null)
             return new DispatchComMethod(method);
 
-        throw new IllegalAnnotationException("Missing annotation: You need to specify at least one of @DISPID or @VTID");
+        throw new IllegalAnnotationException("Missing annotation: You need to specify at least one of @DISPID or @VTID for " + method);
+    }
+
+    @Override
+    public void close() {
+        this.dispose();
     }
 
     /**

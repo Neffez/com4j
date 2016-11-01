@@ -1,5 +1,7 @@
 package com4j;
 
+import java.io.Closeable;
+
 /**
  * Root of all the com4j interfaces.
  *
@@ -11,7 +13,7 @@ package com4j;
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 @IID("{00000000-0000-0000-C000-000000000046}")
-public interface Com4jObject {
+public interface Com4jObject extends Closeable {
     /**
      * Tests the identity of two COM objects.
      *
@@ -89,6 +91,12 @@ public interface Com4jObject {
      * the COM objects deterministically.
      */
     void dispose();
+
+    /**
+     * Same as {@link #dispose}. This allows use in try-with-resources statements.
+     */
+    @Override
+    void close();
 
     /**
      * Checks if this COM object implements a given interface.
