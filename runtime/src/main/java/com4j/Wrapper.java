@@ -143,7 +143,7 @@ final class Wrapper implements InvocationHandler, Com4jObject {
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if(isDisposed && method != DISPOSE_METHODS[0] && method != DISPOSE_METHODS[1])
+        if(isDisposed && !method.equals(DISPOSE_METHODS[0]) && !method.equals(DISPOSE_METHODS[1]))
             throw new IllegalStateException("COM object is already disposed");
         if(args==null)  // this makes the processing easier
             args = EMPTY_ARRAY;
