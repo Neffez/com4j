@@ -52,6 +52,9 @@ public class Main implements ErrorListener {
     @Option(name="-addLibNameToPackageName",usage="Append lower-case library name to package")
     public boolean addLibNameToPackageName = false;
 
+    @Option(name="-defaultLcid",usage="Default locale id for LCID parameters")
+    public Integer defaultLcid;
+
     @Option(name="-generateDefaultMethodOverloads",usage="Generate default method overloads")
     public boolean generateDefaultMethodOverloads = false;
 
@@ -133,6 +136,7 @@ public class Main implements ErrorListener {
         driver.renameGetterAndSetters = javaGetterSetterName;
         driver.addLibNameToPackageName = addLibNameToPackageName;
         driver.generateDefaultMethodOverloads = generateDefaultMethodOverloads;
+        driver.defaultLcid = defaultLcid;
 
         try {
             if(locale!=null)
