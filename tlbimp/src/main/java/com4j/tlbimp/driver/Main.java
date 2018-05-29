@@ -52,6 +52,9 @@ public class Main implements ErrorListener {
     @Option(name="-addLibNameToPackageName",usage="Append lower-case library name to package")
     public boolean addLibNameToPackageName = false;
 
+    @Option(name="-generateDefaultMethodOverloads",usage="Generate default method overloads")
+    public boolean generateDefaultMethodOverloads = false;
+
     @Argument
     private List<String> files = new ArrayList<String>();
 
@@ -129,6 +132,7 @@ public class Main implements ErrorListener {
         driver.alwaysUseComEnums = alwaysUseComEnums;
         driver.renameGetterAndSetters = javaGetterSetterName;
         driver.addLibNameToPackageName = addLibNameToPackageName;
+        driver.generateDefaultMethodOverloads = generateDefaultMethodOverloads;
 
         try {
             if(locale!=null)
