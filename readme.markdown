@@ -23,7 +23,7 @@ To add to a Maven project, add the following to your pom.xml (using the lastest 
 <dependency>
     <groupId>com.github.exceljava.com4j</groupId>
     <artifactId>com4j</artifactId>
-    <version>release-20180529</version>
+    <version>release-20180530</version>
 </dependency>
 ```
 
