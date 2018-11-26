@@ -8,7 +8,6 @@
   </parent>
 
   <artifactId>tlbimp</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
 
   <name>com4j type library importer</name>
 
