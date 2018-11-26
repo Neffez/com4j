@@ -55,7 +55,7 @@ public interface Com4jObject {
      *
      * @return the interface pointer of this object.
      *
-     * @deprecated 64bit unasfe.
+     * @deprecated 64bit unsafe.
      */
     @Deprecated
     int getPtr();
