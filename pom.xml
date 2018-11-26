@@ -28,22 +28,26 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com/kohsuke/com4j.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/kohsuke/com4j.git</developerConnection>
+    <connection>scm:git:https://github.com/maggu2810/com4j.git</connection>
+    <developerConnection>scm:git:git@github.com:maggu2810/com4j.git</developerConnection>
     <tag>HEAD</tag>
-    <url>http://com4j.kohsuke.org/</url>
+    <url>https://github.com/maggu2810/com4j</url>
   </scm>
 
   <issueManagement>
-    <system>GitHub Issues</system>
-    <url>https://github.com/kohsuke/com4j/issues</url>
+    <system>Github</system>
+    <url>https://github.com/maggu2810/com4j/issues</url>
   </issueManagement>
 
   <distributionManagement>
-    <site>
-      <id>github-pages</id>
-      <url>gitsite:git@github.com/kohsuke/com4j.git</url>
-    </site>
+    <repository>
+      <id>bintray</id>
+      <url>https://api.bintray.com/maven/maggu2810/maven/com4j</url>
+    </repository>
+    <snapshotRepository>
+      <id>bintray</id>
+      <url>https://oss.jfrog.org/artifactory/simple/oss-snapshot-local/</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <properties>
