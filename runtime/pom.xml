@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.maggu2810.3rdparty.com4j</groupId>
     <artifactId>com4j-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
 
   <artifactId>com4j</artifactId>
@@ -29,8 +29,8 @@
             <phase>generate-resources</phase>
             <configuration>
               <target>
-                <copy file="../native/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-x86.dll"></copy>
-                <copy file="../native/x64/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-amd64.dll"></copy>
+                <copy file="../native/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-x86.dll" />
+                <copy file="../native/x64/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-amd64.dll" />
               </target>
             </configuration>
           </execution>

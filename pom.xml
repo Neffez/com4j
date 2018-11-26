@@ -4,7 +4,7 @@
 
   <groupId>de.maggu2810.3rdparty.com4j</groupId>
   <artifactId>com4j-parent</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>pom</packaging>
 
   <name>com4j Parent</name>
@@ -30,7 +30,7 @@
   <scm>
     <connection>scm:git:https://github.com/maggu2810/com4j.git</connection>
     <developerConnection>scm:git:git@github.com:maggu2810/com4j.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>com4j-parent-0.1.0</tag>
     <url>https://github.com/maggu2810/com4j</url>
   </scm>
 
