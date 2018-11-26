@@ -13,7 +13,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jvnet.com4j</groupId>
+        <groupId>de.maggu2810.3rdparty.com4j</groupId>
         <artifactId>maven-com4j-plugin</artifactId>
         <executions>
           <execution>
