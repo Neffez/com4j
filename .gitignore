@@ -10,3 +10,8 @@
 *.tli
 vc90.idb
 vc90.pdb
+
+# Eclipse IDE
+.project
+.classpath
+.settings/
