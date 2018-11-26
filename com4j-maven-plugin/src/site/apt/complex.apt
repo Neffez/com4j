@@ -13,7 +13,7 @@ Complex Example
 +------------------------------------------------------------------------+
 <plugin>
   <groupId>org.jvnet.com4j</groupId>
-  <artifactId>maven-com4j-plugin</artifactId>
+  <artifactId>com4j-maven-plugin</artifactId>
   <executions>
 	
     <execution>

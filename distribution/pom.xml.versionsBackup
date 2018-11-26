@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>maven-com4j-plugin</artifactId>
+      <artifactId>com4j-maven-plugin</artifactId>
       <version>2.2-SNAPSHOT</version>
     </dependency>
   </dependencies>

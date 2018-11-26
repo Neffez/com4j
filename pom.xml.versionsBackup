@@ -29,7 +29,7 @@
   <modules>
     <module>runtime</module>
     <module>tlbimp</module>
-    <module>maven-com4j-plugin</module>
+    <module>com4j-maven-plugin</module>
     <module>distribution</module>
   </modules>
 

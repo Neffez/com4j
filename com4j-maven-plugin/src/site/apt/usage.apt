@@ -29,7 +29,7 @@ mvn com4j:gen
 +------------------------------------------------------------------------+
 <plugin>
   <groupId>org.jvnet.com4j</groupId>
-  <artifactId>maven-com4j-plugin</artifactId>
+  <artifactId>com4j-maven-plugin</artifactId>
 
   <configuration>
     <file>C:\Program Files\iTunes\iTunes.exe</file>

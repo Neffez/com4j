@@ -16,7 +16,7 @@
     <plugins>
       <plugin>
         <groupId>de.maggu2810.3rdparty.com4j</groupId>
-        <artifactId>maven-com4j-plugin</artifactId>
+        <artifactId>com4j-maven-plugin</artifactId>
         <executions>
           <execution>
             <goals>
