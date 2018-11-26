@@ -7,7 +7,7 @@ import com4j.tlbimp.driver.Main;
  * @author Kohsuke Kawaguchi
  */
 public class Tlbimp {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Main.main(args);
     }
 }

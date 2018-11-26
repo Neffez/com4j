@@ -1,3 +1,4 @@
+
 package com4j.tlbimp.driver;
 
 import java.io.File;
@@ -42,36 +43,37 @@ public final class Lib {
      */
     private boolean suppress = false;
 
-    public void setLibid(String libid) {
+    public void setLibid(final String libid) {
         this.libid = new GUID(libid);
     }
 
-    public void setLibid(GUID libid) {
+    public void setLibid(final GUID libid) {
         this.libid = libid;
     }
 
-    public void setLibver(String ver) {
+    public void setLibver(final String ver) {
         this.libver = ver;
     }
 
-    public void setPackage(String packageName) {
+    public void setPackage(final String packageName) {
         this.packageName = packageName;
     }
 
-    public void setSuppress(boolean b) {
+    public void setSuppress(final boolean b) {
         this.suppress = b;
     }
 
-    public void setFile(File file) {
+    public void setFile(final File file) {
         this.file = file;
 
-        if(file!=null && !file.exists())
+        if (file != null && !file.exists()) {
             throw new IllegalArgumentException(Messages.NO_SUCH_FILE.format(file));
+        }
     }
 
     public File getFile() throws BindingException {
-        if(file==null) {
-            TypeLibInfo tli = TypeLibInfo.locate(libid, libver);
+        if (file == null) {
+            final TypeLibInfo tli = TypeLibInfo.locate(libid, libver);
             file = tli.typeLibrary;
         }
         return file;
@@ -86,8 +88,8 @@ public final class Lib {
     }
 
     public GUID getLibid() {
-        if(libid==null) {
-            IWTypeLib tlb = COM4J.loadTypeLibrary(file).queryInterface(IWTypeLib.class);
+        if (libid == null) {
+            final IWTypeLib tlb = COM4J.loadTypeLibrary(file).queryInterface(IWTypeLib.class);
             libid = tlb.getLibid();
             tlb.dispose();
         }
@@ -98,7 +100,8 @@ public final class Lib {
      * Makes sure if the class is properly configured.
      */
     void validate() {
-        if(libid==null && file==null)
+        if (libid == null && file == null) {
             throw new IllegalArgumentException("either libid or file must be set");
+        }
     }
 }

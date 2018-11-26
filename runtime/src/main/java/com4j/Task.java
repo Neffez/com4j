@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.util.concurrent.Callable;
@@ -9,35 +10,40 @@ import java.util.concurrent.Callable;
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 abstract class Task<T> implements Callable<T> {
-	private volatile boolean done = false;
-    public abstract T call();
+    private volatile boolean done = false;
 
+    @Override
+    public abstract T call();
 
     /**
      * Executes the task in a {@link ComThread}
+     *
      * @return the return value of the Task execution (returned by {@link #call()}).
      */
     public final T execute() {
-        if( ComThread.isComThread() )
+        if (ComThread.isComThread()) {
             // if invoked from within ComThread, execute it at once
             return call();
-        else
+        } else {
             // otherwise schedule the execution and block
             return ComThread.get().execute(this);
+        }
     }
 
     /**
      * Executes the task in the given {@link ComThread}
+     *
      * @param t the ComThread to execute the task
      * @return the return value of the Task execution (returned by {@link #call()}).
      */
-    public final T execute(ComThread t) {
-        if(Thread.currentThread()==t)
+    public final T execute(final ComThread t) {
+        if (Thread.currentThread() == t) {
             // if invoked from within ComThread, execute it at once
             return call();
-        else
+        } else {
             // otherwise schedule the execution and block
             return t.execute(this);
+        }
     }
 
     /**
@@ -48,22 +54,23 @@ abstract class Task<T> implements Callable<T> {
         exception = null;
         try {
             result = call();
-        } catch( Throwable e ) {
+        } catch (final Throwable e) {
             exception = e;
         } finally {
-        	done = true;
+            done = true;
         }
 
         // let the calling thread know that we are done.
         notify();
     }
-    
+
     /**
      * Indicates whether this task is done executing
+     *
      * @return {@literal true} if execution of the task is finished
      */
     final boolean isDone() {
-    	return done;
+        return done;
     }
 
     /**

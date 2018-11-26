@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.io.File;
@@ -23,34 +24,35 @@ public class ErrorInfo {
 
     private Integer helpContext;
 
-    /*package*/ ErrorInfo(IErrorInfo ei) {
+    /* package */ ErrorInfo(final IErrorInfo ei) {
         try {
             this.guid = ei.guid();
-        } catch (ComException e) {
+        } catch (final ComException e) {
             // ignore
         }
         try {
             this.source = ei.source();
-        } catch (ComException e) {
+        } catch (final ComException e) {
             // ignore
         }
         try {
             this.description = ei.description();
-        } catch (ComException e) {
+        } catch (final ComException e) {
             // ignore
         }
         try {
-            String pathname = ei.helpFile();
-            if(pathname!=null)
+            final String pathname = ei.helpFile();
+            if (pathname != null) {
                 this.helpFile = new File(pathname);
-            else
+            } else {
                 this.helpFile = null;
-        } catch (ComException e) {
+            }
+        } catch (final ComException e) {
             // ignore
         }
         try {
             this.helpContext = ei.helpContext();
-        } catch (ComException e) {
+        } catch (final ComException e) {
             // ignore
         }
     }
@@ -59,7 +61,7 @@ public class ErrorInfo {
      * Returns GUID for the interface that defined the error.
      *
      * @return
-     *      null if no such information is available.
+     * null if no such information is available.
      */
     public GUID getGuid() {
         return guid;
@@ -69,7 +71,7 @@ public class ErrorInfo {
      * Returns the ProgID for the class or application that returned the error.
      *
      * @return
-     *      null if no such information is available.
+     * null if no such information is available.
      */
     public String getSource() {
         return source;
@@ -79,7 +81,7 @@ public class ErrorInfo {
      * Returns a textual description of the error.
      *
      * @return
-     *      null if no such information is available.
+     * null if no such information is available.
      */
     public String getDescription() {
         return description;
@@ -89,7 +91,7 @@ public class ErrorInfo {
      * Returns the path of the Help file that describes the error.
      *
      * @return
-     *      null if no such information is available.
+     * null if no such information is available.
      */
     public File getHelpFile() {
         return helpFile;
@@ -99,13 +101,14 @@ public class ErrorInfo {
      * Returns the Help context identifier (ID) for the error.
      *
      * @return
-     *      null if no such information is available.
+     * null if no such information is available.
      */
     public Integer getHelpContext() {
         return helpContext;
     }
 
+    @Override
     public String toString() {
-        return description!=null ? description : "(no description)";
+        return description != null ? description : "(no description)";
     }
 }

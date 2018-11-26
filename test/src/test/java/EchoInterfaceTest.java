@@ -8,13 +8,13 @@ import junit.framework.TestCase;
  */
 public class EchoInterfaceTest extends TestCase {
     public void test1() throws Exception {
-        ITestObject t = create();
-        Com4jObject r = t.echoInterface(t);
-        assertEquals(t,r);
+        final ITestObject t = create();
+        final Com4jObject r = t.echoInterface(t);
+        assertEquals(t, r);
     }
 
     public void test2() throws Exception {
-        ITestObject t = create();
+        final ITestObject t = create();
         assertNull(t.echoInterface(null));
     }
 

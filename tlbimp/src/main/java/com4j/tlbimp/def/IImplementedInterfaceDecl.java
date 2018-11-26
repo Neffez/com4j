@@ -1,8 +1,9 @@
+
 package com4j.tlbimp.def;
 
+import com4j.Com4jObject;
 import com4j.IID;
 import com4j.VTID;
-import com4j.Com4jObject;
 
 /**
  * interface implemented by a co-class

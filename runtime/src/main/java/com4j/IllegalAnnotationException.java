@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -16,31 +17,34 @@ public class IllegalAnnotationException extends RuntimeException {
      * Standard constructor
      */
     public IllegalAnnotationException() {
-      super();
+        super();
     }
 
     /**
      * Constructor taking a message text.
+     *
      * @param message the error message of the {@link IllegalAnnotationException}
      */
-    public IllegalAnnotationException(String message) {
+    public IllegalAnnotationException(final String message) {
         super(message);
     }
 
     /**
      * Constructor taking a message text and a cause.
+     *
      * @param message the error message of the {@link IllegalAnnotationException}
      * @param cause the cause of the {@link IllegalAnnotationException}
      */
-    public IllegalAnnotationException(String message, Throwable cause) {
+    public IllegalAnnotationException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
     /**
      * Constructor taking a cause.
+     *
      * @param cause the cause of the {@link IllegalAnnotationException}
      */
-    public IllegalAnnotationException(Throwable cause) {
+    public IllegalAnnotationException(final Throwable cause) {
         super(cause);
     }
 

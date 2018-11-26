@@ -1,3 +1,4 @@
+
 package com4j.tlbimp;
 
 import java.text.MessageFormat;
@@ -18,15 +19,15 @@ enum Messages {
     NO_VERSION_AVAILABLE,
     INVALID_VERSION,
     NO_WIN32_TYPELIB,
-    FILE_CONFLICT,
-    ;
+    FILE_CONFLICT,;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
 
-    String format( Object... args ) {
-        return MessageFormat.format( rb.getString(name()), args );
+    String format(final Object... args) {
+        return MessageFormat.format(rb.getString(name()), args);
     }
 
+    @Override
     public String toString() {
         return format();
     }

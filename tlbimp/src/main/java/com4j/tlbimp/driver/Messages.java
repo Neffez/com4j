@@ -1,3 +1,4 @@
+
 package com4j.tlbimp.driver;
 
 import java.text.MessageFormat;
@@ -16,15 +17,15 @@ enum Messages {
     NO_SUCH_FILE,
     CANT_SPECIFY_LIBID_AND_FILENAME,
     REFERENCED_TYPELIB_GENERATED,
-    COULDNT_LOCATE_REFERENCED_TYPELIB,
-    ;
+    COULDNT_LOCATE_REFERENCED_TYPELIB,;
 
     private static final ResourceBundle rb = ResourceBundle.getBundle(Messages.class.getName());
 
-    String format( Object... args ) {
-        return MessageFormat.format( rb.getString(name()), args );
+    String format(final Object... args) {
+        return MessageFormat.format(rb.getString(name()), args);
     }
 
+    @Override
     public String toString() {
         return format();
     }

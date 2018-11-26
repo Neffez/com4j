@@ -1,3 +1,4 @@
+
 package com4j.tlbimp;
 
 import java.io.File;
@@ -14,8 +15,8 @@ public interface CodeWriter {
      * source code / HTML file, etc.
      *
      * @param file
-     *      A relative File like "org/acme/Foo.java". The callee is
-     *      expected to absolutize.
+     *     A relative File like "org/acme/Foo.java". The callee is
+     *     expected to absolutize.
      */
-    IndentingWriter create( File file ) throws IOException;
+    IndentingWriter create(File file) throws IOException;
 }

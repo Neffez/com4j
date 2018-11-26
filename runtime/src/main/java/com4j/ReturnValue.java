@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.lang.annotation.ElementType;
@@ -45,6 +46,7 @@ public @interface ReturnValue {
      *
      * <p>
      * For example, when the underlying type definitions are as follows:
+     *
      * <pre>
      * interface IFoo {
      *   &#64;VTID(10)
@@ -63,6 +65,7 @@ public @interface ReturnValue {
      * The following method on the IFoo interface effectively works
      * as a short-cut of the following chain:
      * </p>
+     *
      * <pre>
      * IFoo {
      *   &#64;ReturnValue(defaultPropertyThrough={IFoo.class,IBar.class})

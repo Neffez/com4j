@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -7,5 +8,5 @@ package com4j;
 interface IConnectionPointContainer extends Com4jObject {
     // 3 is EnumConnectionPoints but we don't care.
     @VTID(4)
-    Com4jObject /*IConnectionPoint*/ FindConnectionPoint(GUID iid);
+    Com4jObject /* IConnectionPoint */ FindConnectionPoint(GUID iid);
 }

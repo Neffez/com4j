@@ -1,6 +1,5 @@
+
 package com4j.tlbimp.def;
-
-
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)

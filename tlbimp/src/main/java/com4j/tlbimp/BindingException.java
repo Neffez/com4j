@@ -1,7 +1,8 @@
+
 package com4j.tlbimp;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Signals a failure in the binding process.
@@ -12,29 +13,31 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class BindingException extends Exception {
 
-    public BindingException(String message) {
+    public BindingException(final String message) {
         super(message);
     }
 
-    public BindingException(String message, Throwable cause) {
+    public BindingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public BindingException(Throwable cause) {
+    public BindingException(final Throwable cause) {
         super(cause);
     }
 
-    private final List<String> contexts = new ArrayList<String>();
+    private final List<String> contexts = new ArrayList<>();
 
-    void addContext( String ctxt ) {
+    void addContext(final String ctxt) {
         contexts.add(ctxt);
     }
 
+    @Override
     public String getMessage() {
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
         buf.append(super.getMessage());
-        for( String s : contexts )
+        for (final String s : contexts) {
             buf.append("\n  ").append(s);
+        }
         return buf.toString();
     }
 }

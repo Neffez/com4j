@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.lang.annotation.ElementType;
@@ -16,10 +17,11 @@ import java.lang.annotation.Target;
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
+@Target({ ElementType.PARAMETER })
 public @interface MarshalAs {
     /**
      * Returns the NativeType to which this Java parameter should be marshaled.
+     *
      * @return the NativeType to which this Java parameter should be marshaled.
      */
     NativeType value();

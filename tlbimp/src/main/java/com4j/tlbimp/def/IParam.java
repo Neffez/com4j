@@ -1,3 +1,4 @@
+
 package com4j.tlbimp.def;
 
 import com4j.Com4jObject;
@@ -32,7 +33,7 @@ public interface IParam extends Com4jObject {
     boolean isOptional();
 
     @VTID(9)
-    @ReturnValue(type=NativeType.VARIANT)
+    @ReturnValue(type = NativeType.VARIANT)
     Variant getDefaultValue();
 
     @VTID(10)

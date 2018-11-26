@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -42,7 +43,7 @@ final class Win32Lock {
      *
      * This runs Windows message loop.
      */
-    void suspend(int timeoutMillis){
+    void suspend(final int timeoutMillis) {
         suspend1(eventHandle, timeoutMillis);
     }
 
@@ -54,8 +55,12 @@ final class Win32Lock {
     }
 
     private static native void closeHandle(long eventHandle);
+
     private static native int createEvent();
+
     private static native void activate0(long handle);
+
     private static native void suspend0(long handle);
+
     private static native void suspend1(long handle, int timeoutMillis);
 }

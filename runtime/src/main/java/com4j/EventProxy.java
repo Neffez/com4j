@@ -1,15 +1,16 @@
+
 package com4j;
 
-import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.WeakHashMap;
-import java.util.Collections;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.lang.reflect.Method;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * For receiving events from COM, we use one native object (CEventReceiver)
@@ -35,7 +36,7 @@ final class EventProxy<T> implements EventCookie {
      * Creates a new event proxy that implements the event interface {@code intf}
      * and delivers events to {@code javaObject}.
      */
-    EventProxy(Class<T> intf, T javaObject) {
+    EventProxy(final Class<T> intf, final T javaObject) {
         this.descriptor = getDescriptor(intf);
         this.javaObject = javaObject;
     }
@@ -43,9 +44,11 @@ final class EventProxy<T> implements EventCookie {
     /**
      * Terminates the event subscription.
      */
+    @Override
     public void close() {
-        if(nativeProxy!=0) {
+        if (nativeProxy != 0) {
             new Task<Void>() {
+                @Override
                 public Void call() {
                     Native.unadvise(nativeProxy);
                     return null;
@@ -55,49 +58,49 @@ final class EventProxy<T> implements EventCookie {
         }
     }
 
-    int[] getDISPIDs(String[] names) {
-        int[] r = new int[names.length];
-        for( int i=0; i<names.length; i++ ) {
+    int[] getDISPIDs(final String[] names) {
+        final int[] r = new int[names.length];
+        for (int i = 0; i < names.length; i++) {
             r[i] = descriptor.getDISPID(names[i]);
         }
         return r;
     }
 
-    Object invoke(int dispId, int flag, Variant[] args) throws Throwable {
-        EventMethod m = descriptor.get(dispId);
-        if(m==null)
-            throw new ComException("Undefined DISPID="+dispId,DISP_E_MEMBERNOTFOUND);
-        return m.invoke(javaObject,flag,args);
+    Object invoke(final int dispId, final int flag, final Variant[] args) throws Throwable {
+        final EventMethod m = descriptor.get(dispId);
+        if (m == null) {
+            throw new ComException("Undefined DISPID=" + dispId, DISP_E_MEMBERNOTFOUND);
+        }
+        return m.invoke(javaObject, flag, args);
     }
 
-//
-// Used by the native code to assist exception handling
-//
-    static String getErrorSource(Throwable t) {
+    //
+    // Used by the native code to assist exception handling
+    //
+    static String getErrorSource(final Throwable t) {
         return t.toString();
     }
 
-    static String getErrorDetail(Throwable t) {
-        StringWriter sw = new StringWriter();
+    static String getErrorDetail(final Throwable t) {
+        final StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         return sw.toString();
     }
 
-
     /**
      * Descriptor cache.
      */
-    private static final Map<Class,EventInterfaceDescriptor> descriptors =
-        Collections.synchronizedMap(new WeakHashMap<Class,EventInterfaceDescriptor>());
+    private static final Map<Class, EventInterfaceDescriptor> descriptors = Collections
+            .synchronizedMap(new WeakHashMap<Class, EventInterfaceDescriptor>());
 
     /**
      * Gets the descriptor for the given type.
      */
-    private static <T> EventInterfaceDescriptor<T> getDescriptor(Class<T> t) {
+    private static <T> EventInterfaceDescriptor<T> getDescriptor(final Class<T> t) {
         EventInterfaceDescriptor<T> r = descriptors.get(t);
-        if(r==null) {
-            r = new EventInterfaceDescriptor<T>(t);
-            descriptors.put(t,r);
+        if (r == null) {
+            r = new EventInterfaceDescriptor<>(t);
+            descriptors.put(t, r);
         }
         return r;
     }
@@ -111,29 +114,30 @@ final class EventProxy<T> implements EventCookie {
         /**
          * Methods by their names.
          */
-        private final Map<String,EventMethod> methodsByName = new HashMap<String,EventMethod>();
+        private final Map<String, EventMethod> methodsByName = new HashMap<>();
 
-        private final Map<Integer,EventMethod> methodsByID = new HashMap<Integer, EventMethod>();
+        private final Map<Integer, EventMethod> methodsByID = new HashMap<>();
 
-        EventInterfaceDescriptor(Class<T> eventInterface) {
+        EventInterfaceDescriptor(final Class<T> eventInterface) {
             this.eventInterface = eventInterface;
 
-            for (Method m : eventInterface.getDeclaredMethods()) {
-                EventMethod em = new EventMethod(m);
-                methodsByName.put(m.getName(),em);
-                methodsByID.put(em.dispid,em);
+            for (final Method m : eventInterface.getDeclaredMethods()) {
+                final EventMethod em = new EventMethod(m);
+                methodsByName.put(m.getName(), em);
+                methodsByID.put(em.dispid, em);
             }
         }
 
-        public int getDISPID(String name) {
-            EventMethod r = methodsByName.get(name);
-            if(r==null)
+        public int getDISPID(final String name) {
+            final EventMethod r = methodsByName.get(name);
+            if (r == null) {
                 return DISP_E_UNKNOWNNAME;
-            else
+            } else {
                 return r.dispid;
+            }
         }
 
-        public EventMethod get(int id) {
+        public EventMethod get(final int id) {
             return methodsByID.get(id);
         }
     }
@@ -143,10 +147,11 @@ final class EventProxy<T> implements EventCookie {
         private final Method method;
         private final Class<?>[] params;
 
-        public EventMethod(Method m) {
-            DISPID a = m.getAnnotation(DISPID.class);
-            if(a==null)
-                throw new IllegalAnnotationException(m+" needs to have @DISPID");
+        public EventMethod(final Method m) {
+            final DISPID a = m.getAnnotation(DISPID.class);
+            if (a == null) {
+                throw new IllegalAnnotationException(m + " needs to have @DISPID");
+            }
             dispid = a.value();
             method = m;
             params = m.getParameterTypes();
@@ -155,20 +160,24 @@ final class EventProxy<T> implements EventCookie {
         /**
          * Invokes a method.
          */
-        public Object invoke(Object o, int flag, Variant[] args) throws Throwable {
+        public Object invoke(final Object o, final int flag, final Variant[] args) throws Throwable {
             try {
-                if(args.length!=params.length)
-                    throw new ComException("Argument length mismatch. Expected "+params.length+" but found "+args.length,DISP_E_BADPARAMCOUNT);
+                if (args.length != params.length) {
+                    throw new ComException(
+                            "Argument length mismatch. Expected " + params.length + " but found " + args.length,
+                            DISP_E_BADPARAMCOUNT);
+                }
 
-                Object[] oargs = new Object[args.length];
-                for( int i=0; i<args.length; i++ )
+                final Object[] oargs = new Object[args.length];
+                for (int i = 0; i < args.length; i++) {
                     oargs[i] = args[i].convertTo(params[i]);
-                return method.invoke(o,oargs);
-            } catch (InvocationTargetException e) {
-                logger.log(Level.WARNING, method+" on "+o+" reported an exception",e.getTargetException());
+                }
+                return method.invoke(o, oargs);
+            } catch (final InvocationTargetException e) {
+                logger.log(Level.WARNING, method + " on " + o + " reported an exception", e.getTargetException());
                 throw e.getTargetException();
-            } catch (RuntimeException e) {
-                logger.log(Level.WARNING, "Unable to invoke "+method+" on "+o,e);
+            } catch (final RuntimeException e) {
+                logger.log(Level.WARNING, "Unable to invoke " + method + " on " + o, e);
                 throw e;
             }
         }
@@ -183,12 +192,13 @@ final class EventProxy<T> implements EventCookie {
     static {
         boolean com4jDebug = false;
         try {
-            com4jDebug = System.getProperty("com4j.debug")!=null;
-        } catch (Throwable e) {
+            com4jDebug = System.getProperty("com4j.debug") != null;
+        } catch (final Throwable e) {
             ;
         }
 
-        if(!com4jDebug)
+        if (!com4jDebug) {
             logger.setLevel(Level.OFF);
+        }
     }
 }

@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -10,10 +11,13 @@ package com4j;
  * <p>
  * Users are encouraged to use plain Java arrays
  * as much as possible. For example, the following Java method:
+ *
  * <pre>
- * void foo( short[] args );
+ * void foo(short[] args);
  * </pre>
+ *
  * would be bridged to the following COM method:
+ *
  * <pre>
  * HRESULT foo( [in] SAFEARRAY(short)* args );
  * </pre>
@@ -29,7 +33,7 @@ public final class SafeArray {
      */
     private int ptr;
 
-    public SafeArray( Variant.Type type, Bound[] bounds ) {
+    public SafeArray(final Variant.Type type, final Bound[] bounds) {
     }
 
     /**
@@ -40,6 +44,7 @@ public final class SafeArray {
         public int ubound;
     }
 
-    public native Object get( int... indices );
-    public native void set( int... indices );
+    public native Object get(int... indices);
+
+    public native void set(int... indices);
 }

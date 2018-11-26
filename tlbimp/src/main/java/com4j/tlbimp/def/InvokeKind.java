@@ -1,3 +1,4 @@
+
 package com4j.tlbimp.def;
 
 import com4j.ComEnum;
@@ -11,13 +12,13 @@ public enum InvokeKind implements ComEnum {
     PROPERTYPUT(4),
     PROPERTYPUTREF(8);
 
-
     private final int value;
 
-    InvokeKind(int value) {
-        this.value=value;
+    InvokeKind(final int value) {
+        this.value = value;
     }
 
+    @Override
     public int comEnumValue() {
         return value;
     }

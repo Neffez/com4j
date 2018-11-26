@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.lang.annotation.ElementType;
@@ -15,7 +16,7 @@ import java.lang.annotation.Target;
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 public @interface VTID {
     /**
      * Ordinal of this COM method among methods on the same interface.

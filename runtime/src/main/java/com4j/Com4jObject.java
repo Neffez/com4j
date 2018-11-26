@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -28,6 +29,7 @@ public interface Com4jObject {
      * @param o the other {@link Com4jObject}
      * @return true if the IUnknown pointer of the two objects are equal
      */
+    @Override
     boolean equals(Object o);
 
     /**
@@ -45,14 +47,17 @@ public interface Com4jObject {
      *
      * @return The hash coded for this {@link Com4jObject}
      */
+    @Override
     int hashCode();
 
     /**
      * Returns the interface pointer as an integer
+     *
      * @return the interface pointer of this object.
      *
      * @deprecated 64bit unasfe.
      */
+    @Deprecated
     int getPtr();
 
     /**
@@ -67,7 +72,9 @@ public interface Com4jObject {
     long getIUnknownPointer();
 
     /**
-     * Every Com4jObject has a ComThread that is running handling all the calls to this object. This method has to return that thread.
+     * Every Com4jObject has a ComThread that is running handling all the calls to this object. This method has to
+     * return that thread.
+     *
      * @return the ComThread handling all the calls to this object.
      */
     ComThread getComThread();
@@ -77,6 +84,7 @@ public interface Com4jObject {
      *
      * @return a String representation of this object.
      */
+    @Override
     String toString();
 
     /**
@@ -95,15 +103,16 @@ public interface Com4jObject {
      *
      * <p>
      * This is just a convenience method that behaves as follows:
+     *
      * <pre>
-     * return queryInterface(comInterface)!=null;
+     * return queryInterface(comInterface) != null;
      * </pre>
      *
      * @param comInterface The class object of the Com4J interface
      * @param <T> the type of the interface class object
      * @return true if the wrapped COM object implements a given interface.
      */
-    <T extends Com4jObject> boolean is( Class<T> comInterface );
+    <T extends Com4jObject> boolean is(Class<T> comInterface);
 
     /**
      * Invokes the queryInterface of the wrapped COM object and attempts
@@ -113,16 +122,16 @@ public interface Com4jObject {
      * @param comInterface the class object of the requested Com4J interface
      * @return a reference to the requested interface or null if the queryInterface fails.
      */
-    <T extends Com4jObject> T queryInterface( Class<T> comInterface );
+    <T extends Com4jObject> T queryInterface(Class<T> comInterface);
 
     /**
      * Subscribes to the given event interface of this object.
      *
      * @param eventInterface The event interface definition. This interface/class
-     *      has to have an {@link IID} annotation that designates
-     *      the event interface GUID, and also methods annotated with
-     *      {@link DISPID} that designates what methods are event methods.
-     *      Must not be null.
+     *     has to have an {@link IID} annotation that designates
+     *     the event interface GUID, and also methods annotated with
+     *     {@link DISPID} that designates what methods are event methods.
+     *     Must not be null.
      *
      * @param receiver The object that receives events.
      *
@@ -130,12 +139,13 @@ public interface Com4jObject {
      * @throws ComException if a subscription fails.
      *
      * @return Always non-null. Call {@link EventCookie#close()} to shut down
-     *         the event subscription.
+     * the event subscription.
      */
-    <T> EventCookie advise( Class<T> eventInterface, T receiver );
+    <T> EventCookie advise(Class<T> eventInterface, T receiver);
 
     /**
      * You can use this function to set a name to an object. This is only for debug purposes.
+     *
      * @param name the new name of the object.
      */
     void setName(String name);

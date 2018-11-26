@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -7,7 +8,6 @@ import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
-
 
 /**
  * {@link InvocationHandler} that backs up a COM object.
@@ -37,9 +37,9 @@ final class Wrapper implements InvocationHandler, Com4jObject {
         try {
             DISPOSE_METHODS[0] = Wrapper.class.getDeclaredMethod("dispose");
             DISPOSE_METHODS[1] = Com4jObject.class.getDeclaredMethod("dispose");
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
@@ -48,21 +48,21 @@ final class Wrapper implements InvocationHandler, Com4jObject {
      * interface pointer.
      */
     private final long ptr;
-    
+
     private volatile boolean isDisposed = false;
 
     /**
      * Cached hash code. The value of {@code IUnknown*}.
      */
-    private volatile long hashCode=0;
+    private volatile long hashCode = 0;
 
     /**
      * All the invocation to the wrapper COM object must go through this thread.
      */
     private final ComThread thread;
-    
+
     /**
-     * A phantom reference that owns the native pointer.  When this ref is enqueue,
+     * A phantom reference that owns the native pointer. When this ref is enqueue,
      * the com thread will release() the native pointer.
      */
     final NativePointerPhantomReference ref;
@@ -72,14 +72,15 @@ final class Wrapper implements InvocationHandler, Com4jObject {
      *
      * TODO: revisit the cache design
      */
-    private Map<Method,ComMethod> cache = Collections.synchronizedMap(
-        new WeakHashMap<Method,ComMethod>());
+    private final Map<Method, ComMethod> cache = Collections.synchronizedMap(new WeakHashMap<Method, ComMethod>());
 
     /**
      * Wraps a new COM object. The pointer needs to be addRefed by the caller if needed.
      */
-    private Wrapper(long ptr) {
-        if(ptr==0)   throw new IllegalArgumentException();
+    private Wrapper(final long ptr) {
+        if (ptr == 0) {
+            throw new IllegalArgumentException();
+        }
         assert ComThread.isComThread();
 
         this.ptr = ptr;
@@ -93,13 +94,10 @@ final class Wrapper implements InvocationHandler, Com4jObject {
      * <p>
      * Must be run from a {@link ComThread}. This method doesn't do AddRef.
      */
-    static <T extends Com4jObject>
-    T create( Class<T> primaryInterface, long ptr ) {
-        Wrapper w = new Wrapper(ptr);
-        T r = primaryInterface.cast(Proxy.newProxyInstance(
-            primaryInterface.getClassLoader(),
-            new Class<?>[]{primaryInterface},
-                w));
+    static <T extends Com4jObject> T create(final Class<T> primaryInterface, final long ptr) {
+        final Wrapper w = new Wrapper(ptr);
+        final T r = primaryInterface.cast(
+                Proxy.newProxyInstance(primaryInterface.getClassLoader(), new Class<?>[] { primaryInterface }, w));
         return r;
     }
 
@@ -107,122 +105,137 @@ final class Wrapper implements InvocationHandler, Com4jObject {
      *
      * @deprecated 64bit unsafe.
      */
-    static Com4jObject create( int ptr ) {
-        return create((long)ptr);
+    @Deprecated
+    static Com4jObject create(final int ptr) {
+        return create((long) ptr);
     }
-    
+
     /**
      * Creates a new proxy object to a given COM pointer.
      * <p>
      * Must be run from a {@link ComThread}.
      */
-    static Com4jObject create( long ptr ) {
-        Wrapper w = new Wrapper(ptr);
+    static Com4jObject create(final long ptr) {
+        final Wrapper w = new Wrapper(ptr);
         return w;
     }
 
-
     /**
      * Returns the wrapped interface pointer as an integer
+     *
      * @return The wrapped interface pointer.
      */
     @Override
     public int getPtr() {
-        return (int)ptr;
+        return (int) ptr;
     }
 
+    @Override
     public long getPointer() {
         return ptr;
     }
 
     @Override
-    public ComThread getComThread(){
-      return thread;
+    public ComThread getComThread() {
+        return thread;
     }
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if(isDisposed && method != DISPOSE_METHODS[0] && method != DISPOSE_METHODS[1])
+    @Override
+    public Object invoke(final Object proxy, final Method method, Object[] args) throws Throwable {
+        if (isDisposed && method != DISPOSE_METHODS[0] && method != DISPOSE_METHODS[1]) {
             throw new IllegalStateException("COM object is already disposed");
-        if(args==null)  // this makes the processing easier
+        }
+        if (args == null) {
             args = EMPTY_ARRAY;
+        }
 
-        Class<?> declClazz = method.getDeclaringClass();
+        final Class<?> declClazz = method.getDeclaringClass();
 
-        if( declClazz==Com4jObject.class || declClazz==Object.class ) {
+        if (declClazz == Com4jObject.class || declClazz == Object.class) {
             // method declared on Com4jObject is not meant to be delegated.
             try {
-                return method.invoke(this,args);
-            } catch( IllegalAccessException e ) {
+                return method.invoke(this, args);
+            } catch (final IllegalAccessException e) {
                 throw new IllegalAccessError(e.getMessage());
-            } catch( InvocationTargetException e ) {
+            } catch (final InvocationTargetException e) {
                 throw e.getTargetException();
             }
         }
-        UseDefaultValues useDefaultValues = method.getAnnotation(UseDefaultValues.class);
+        final UseDefaultValues useDefaultValues = method.getAnnotation(UseDefaultValues.class);
 
-        if(useDefaultValues != null){
-          int defValCount = useDefaultValues.optParamIndex().length;
-          Object[] newArgs = new Object[args.length + defValCount];
-          // fill in the given arguments to the right place:
-          for(int i = 0; i < args.length; i++){
-            newArgs[useDefaultValues.paramIndexMapping()[i]] = args[i];
-          }
-          // Fill in the (optional) default values:
-          ComMethod comMethod = getMethod(method);
-          for(int i = 0; i < defValCount; i++){
-            Object defParam =  comMethod.defaultParameters[i];
-            newArgs[useDefaultValues.optParamIndex()[i]] = defParam;
-          }
-          args = newArgs;
+        if (useDefaultValues != null) {
+            final int defValCount = useDefaultValues.optParamIndex().length;
+            final Object[] newArgs = new Object[args.length + defValCount];
+            // fill in the given arguments to the right place:
+            for (int i = 0; i < args.length; i++) {
+                newArgs[useDefaultValues.paramIndexMapping()[i]] = args[i];
+            }
+            // Fill in the (optional) default values:
+            final ComMethod comMethod = getMethod(method);
+            for (int i = 0; i < defValCount; i++) {
+                final Object defParam = comMethod.defaultParameters[i];
+                newArgs[useDefaultValues.optParamIndex()[i]] = defParam;
+            }
+            args = newArgs;
         }
 
-        if(invCache==null)
+        if (invCache == null) {
             invCache = new InvocationThunk();
+        }
         try {
-            return invCache.invoke(getMethod(method),args);
-        } catch (ExecutionException e) {
-            if(e.getCause() instanceof ComException)
-                throw new ComException((ComException)e.getCause());
+            return invCache.invoke(getMethod(method), args);
+        } catch (final ExecutionException e) {
+            if (e.getCause() instanceof ComException) {
+                throw new ComException((ComException) e.getCause());
+            }
             throw e;
         }
     }
 
-    private ComMethod getMethod(Method method) {
+    private ComMethod getMethod(final Method method) {
         ComMethod r = cache.get(method);
-        if(r!=null)     return r;
+        if (r != null) {
+            return r;
+        }
 
         r = createComMethod(method);
-        cache.put(method,r);
+        cache.put(method, r);
         return r;
     }
 
-    private ComMethod createComMethod(Method method) {
-        ReturnValue rv = method.getAnnotation(ReturnValue.class);
-        if(rv!=null && rv.defaultPropertyThrough().length>0)
-            return new DefaultedComMethod(method,rv);
+    private ComMethod createComMethod(final Method method) {
+        final ReturnValue rv = method.getAnnotation(ReturnValue.class);
+        if (rv != null && rv.defaultPropertyThrough().length > 0) {
+            return new DefaultedComMethod(method, rv);
+        }
 
         // prefer the custom interface.
-        VTID vtid = method.getAnnotation(VTID.class);
-        if(vtid != null){
+        final VTID vtid = method.getAnnotation(VTID.class);
+        if (vtid != null) {
             return new StandardComMethod(method);
         }
 
-        DISPID dispid = method.getAnnotation(DISPID.class);
-        if(dispid!=null)
+        final DISPID dispid = method.getAnnotation(DISPID.class);
+        if (dispid != null) {
             return new DispatchComMethod(method);
+        }
 
-        throw new IllegalAnnotationException("Missing annotation: You need to specify at least one of @DISPID or @VTID");
+        throw new IllegalAnnotationException(
+                "Missing annotation: You need to specify at least one of @DISPID or @VTID");
     }
 
     /**
-     * Disposes the native part of this Wrapper. That is, calling Release on the interface pointer. After a wrapper is disposed,
+     * Disposes the native part of this Wrapper. That is, calling Release on the interface pointer. After a wrapper is
+     * disposed,
      * every call to a COM method will raise an {@link IllegalStateException}
      */
+    @Override
     public void dispose() {
-        if(!isDisposed) {
+        if (!isDisposed) {
             new Task<Void>() {
+                @Override
                 public Void call() {
                     dispose0();
                     return null;
@@ -238,45 +251,53 @@ final class Wrapper implements InvocationHandler, Com4jObject {
         }
     }
 
-    public <T extends Com4jObject> boolean is( Class<T> comInterface ) {
+    @Override
+    public <T extends Com4jObject> boolean is(final Class<T> comInterface) {
         try {
-            GUID iid = COM4J.getIID(comInterface);
-            return new QITestTask(iid).execute(thread)!=0;
-        } catch( ComException e ) {
+            final GUID iid = COM4J.getIID(comInterface);
+            return new QITestTask(iid).execute(thread) != 0;
+        } catch (final ComException e) {
             return false;
         }
     }
 
     /**
      * Returns whether this object was already disposed.
+     *
      * @return true if this object was disposed, false otherwise.
      */
     public boolean isDisposed() {
-      return isDisposed;
+        return isDisposed;
     }
-    
-    public <T extends Com4jObject> T queryInterface( final Class<T> comInterface ) {
+
+    @Override
+    public <T extends Com4jObject> T queryInterface(final Class<T> comInterface) {
         return new Task<T>() {
+            @Override
             public T call() {
-                GUID iid = COM4J.getIID(comInterface);
-                long nptr = Native.queryInterface(ptr,iid);
-                if(nptr==0)
-                    return null;    // failed to cast
-                return create( comInterface, nptr );
+                final GUID iid = COM4J.getIID(comInterface);
+                final long nptr = Native.queryInterface(ptr, iid);
+                if (nptr == 0) {
+                    return null; // failed to cast
+                }
+                return create(comInterface, nptr);
             }
         }.execute(thread);
     }
 
+    @Override
     public <T> EventProxy<?> advise(final Class<T> eventInterface, final T object) {
         return new Task<EventProxy<?>>() {
+            @Override
             public EventProxy<?> call() {
-                IConnectionPointContainer cpc = queryInterface(IConnectionPointContainer.class);
-                if(cpc==null)
-                    throw new ComException("This object doesn't have event source",-1);
-                GUID iid = COM4J.getIID(eventInterface);
-                Com4jObject cp = cpc.FindConnectionPoint(iid);
-                EventProxy<T> proxy = new EventProxy<T>(eventInterface, object);
-                proxy.nativeProxy = Native.advise(cp.getPointer(), proxy,iid.v[0], iid.v[1]);
+                final IConnectionPointContainer cpc = queryInterface(IConnectionPointContainer.class);
+                if (cpc == null) {
+                    throw new ComException("This object doesn't have event source", -1);
+                }
+                final GUID iid = COM4J.getIID(eventInterface);
+                final Com4jObject cp = cpc.FindConnectionPoint(iid);
+                final EventProxy<T> proxy = new EventProxy<>(eventInterface, object);
+                proxy.nativeProxy = Native.advise(cp.getPointer(), proxy, iid.v[0], iid.v[1]);
 
                 // clean up resources to be nice
                 cpc.dispose();
@@ -288,37 +309,43 @@ final class Wrapper implements InvocationHandler, Com4jObject {
     }
 
     @Override
-    public void setName(String name){
+    public void setName(final String name) {
         this.name = name;
     }
 
+    @Override
     public String toString() {
-        if(name == null) {
-            return "ComObject:"+Long.toHexString(ptr);
+        if (name == null) {
+            return "ComObject:" + Long.toHexString(ptr);
         } else {
-            return name+":"+Long.toHexString(ptr);
+            return name + ":" + Long.toHexString(ptr);
         }
     }
 
-    public final int hashCode() {
-        long l = getIUnknownPointer();
-        return (int)(l ^ (l >>> 32));
+    @Override
+    public int hashCode() {
+        final long l = getIUnknownPointer();
+        return (int) (l ^ l >>> 32);
     }
 
+    @Override
     public long getIUnknownPointer() {
-        if(hashCode==0) {
-            if(isDisposed) {
-              hashCode = 0;
+        if (hashCode == 0) {
+            if (isDisposed) {
+                hashCode = 0;
             } else {
-              hashCode = new QITestTask(COM4J.IID_IUnknown).execute(thread);
+                hashCode = new QITestTask(COM4J.IID_IUnknown).execute(thread);
             }
         }
         return hashCode;
     }
 
-    public final boolean equals( Object rhs ) {
-        if(!(rhs instanceof Com4jObject))   return false;
-        return this.getIUnknownPointer()== ((Com4jObject)rhs).getIUnknownPointer();
+    @Override
+    public boolean equals(final Object rhs) {
+        if (!(rhs instanceof Com4jObject)) {
+            return false;
+        }
+        return this.getIUnknownPointer() == ((Com4jObject) rhs).getIUnknownPointer();
     }
 
     /**
@@ -332,11 +359,12 @@ final class Wrapper implements InvocationHandler, Com4jObject {
         /**
          * Invokes the method on the peer {@link ComThread} and returns
          * its return value.
+         *
          * @param method The {@link ComMethod} to invoke
          * @param args The arguments of the method
          * @return Returns the return value of the invoked method
          */
-        public synchronized Object invoke( ComMethod method, Object[] args ) {
+        public synchronized Object invoke(final ComMethod method, final Object[] args) {
             invCache = null;
             this.method = method;
             this.args = args;
@@ -350,10 +378,12 @@ final class Wrapper implements InvocationHandler, Com4jObject {
 
         /**
          * Called from {@link ComThread} to actually carry out the execution.
+         *
          * @return Returns the return value of the invoked method
          */
+        @Override
         public synchronized Object call() {
-            Object r = method.invoke(ptr,args);
+            final Object r = method.invoke(ptr, args);
             // clear fields that are no longer necessary
             method = null;
             args = null;
@@ -366,8 +396,6 @@ final class Wrapper implements InvocationHandler, Com4jObject {
      */
     InvocationThunk invCache;
 
-
-
     /**
      * Invokes QueryInterface but immediately releases that pointer.
      * Useful for checking if an object implements a particular interface.
@@ -375,14 +403,15 @@ final class Wrapper implements InvocationHandler, Com4jObject {
     private final class QITestTask extends Task<Long> {
         private final GUID iid;
 
-        public QITestTask(GUID iid) {
+        public QITestTask(final GUID iid) {
             this.iid = iid;
         }
 
+        @Override
         public Long call() {
-            long nptr = Native.queryInterface(ptr,iid);
-            if(nptr!=0) {
-              Native.release(nptr);
+            final long nptr = Native.queryInterface(ptr, iid);
+            if (nptr != 0) {
+                Native.release(nptr);
             }
             return nptr;
         }

@@ -1,8 +1,9 @@
+
 package com4j.tlbimp.def;
 
+import com4j.GUID;
 import com4j.IID;
 import com4j.VTID;
-import com4j.GUID;
 
 /**
  * CoClass declaration
@@ -19,8 +20,7 @@ public interface ICoClassDecl extends ITypeDecl {
      * gets an interface implemented by this co-class
      */
     @VTID(8)
-    IImplementedInterfaceDecl getImplementedInterface(
-        int index);
+    IImplementedInterfaceDecl getImplementedInterface(int index);
 
     /**
      * checks if this co-class is creatable

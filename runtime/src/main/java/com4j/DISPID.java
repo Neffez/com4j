@@ -1,9 +1,10 @@
+
 package com4j;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
 
 /**
  * Dispatch ID of the method.
@@ -15,7 +16,7 @@ import java.lang.annotation.ElementType;
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 public @interface DISPID {
     /**
      * DISPID used by {@code IDispatch}.

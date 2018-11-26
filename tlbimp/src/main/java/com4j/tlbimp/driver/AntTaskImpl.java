@@ -1,18 +1,19 @@
+
 package com4j.tlbimp.driver;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 
 import com4j.ComException;
 import com4j.GUID;
 import com4j.tlbimp.BindingException;
 import com4j.tlbimp.ErrorListener;
 import com4j.tlbimp.FileCodeWriter;
-import com4j.tlbimp.Generator;
 import com4j.tlbimp.def.IWTypeLib;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * tlbimp implemented as an Ant task.
@@ -27,87 +28,93 @@ public class AntTaskImpl extends Task implements ErrorListener {
     private GUID libid;
     private String libver;
 
-    private Driver driver = new Driver();
+    private final Driver driver = new Driver();
 
     private boolean hasLib = false;
 
-    public void setDestDir(File destDir) {
+    public void setDestDir(final File destDir) {
         this.destDir = destDir;
     }
 
-    public void setPackage(String packageName) {
+    public void setPackage(final String packageName) {
         driver.setPackageName(packageName);
     }
 
-    public void setFile(File source) {
+    public void setFile(final File source) {
         this.source = source;
     }
 
-    public void setLibid(String libid) {
+    public void setLibid(final String libid) {
         this.libid = new GUID(libid);
     }
 
-    public void setLibver(String libver) {
+    public void setLibver(final String libver) {
         this.libver = libver;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(final String locale) {
         driver.setLocale(locale);
     }
 
-    public void setRenameGetterAndSetters(boolean renameGetterAndSetters) {
+    public void setRenameGetterAndSetters(final boolean renameGetterAndSetters) {
         driver.renameGetterAndSetters = renameGetterAndSetters;
     }
 
-    public void setAlwaysUseComEnums(boolean alwaysUseComEnums) {
+    public void setAlwaysUseComEnums(final boolean alwaysUseComEnums) {
         driver.alwaysUseComEnums = alwaysUseComEnums;
     }
 
-    public void setGenerateDefaultMethodOverloads(boolean v) {
+    public void setGenerateDefaultMethodOverloads(final boolean v) {
         driver.generateDefaultMethodOverloads = v;
     }
 
-    public void addConfiguredLib( Lib r ) {
+    public void addConfiguredLib(final Lib r) {
         r.validate();
         driver.addLib(r);
         hasLib = true;
     }
 
+    @Override
     public void execute() throws BuildException {
-        if( destDir==null )
+        if (destDir == null) {
             throw new BuildException("@destDir is missing");
+        }
 
-        if(source!=null || libid!=null) {
-            Lib lib = new Lib();
+        if (source != null || libid != null) {
+            final Lib lib = new Lib();
             lib.setLibid(libid);
             lib.setLibver(libver);
             lib.setFile(source);
             addConfiguredLib(lib);
         }
 
-        if(!hasLib)
+        if (!hasLib) {
             throw new BuildException("No type library is specified");
+        }
 
         try {
-            driver.run( new FileCodeWriter(destDir), this);
-        } catch( ComException e ) {
+            driver.run(new FileCodeWriter(destDir), this);
+        } catch (final ComException e) {
             throw new BuildException(e);
-        } catch( IOException e ) {
+        } catch (final IOException e) {
             throw new BuildException(e);
-        } catch( BindingException e ) {
+        } catch (final BindingException e) {
             throw new BuildException(e);
         }
     }
 
-    public void started(IWTypeLib lib) {
-        log("Generating definitions from "+lib.getName(),Project.MSG_INFO);
+    @Override
+    public void started(final IWTypeLib lib) {
+        log("Generating definitions from " + lib.getName(), Project.MSG_INFO);
     }
 
-    public void error(BindingException e) {
-        log(e.getMessage(),Project.MSG_ERR);
+    @Override
+    public void error(final BindingException e) {
+        log(e.getMessage(), Project.MSG_ERR);
     }
 
-    public void warning(String message) {
-        log(message,Project.MSG_WARN);
+    @Override
+    public void warning(final String message) {
+        log(message, Project.MSG_WARN);
     }
 }

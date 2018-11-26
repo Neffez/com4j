@@ -1,6 +1,5 @@
-package com4j;
 
-import com4j.stdole.IEnumVARIANT;
+package com4j;
 
 import static com4j.Const.BYREF;
 
@@ -12,6 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TimeZone;
+
+import com4j.stdole.IEnumVARIANT;
 
 /**
  * Native method type.
@@ -25,9 +26,9 @@ public enum NativeType {
      * TODO: support CharSequence
      * <p>
      * Expected Java type:
-     *      String
+     * String
      */
-    BSTR(1,4),
+    BSTR(1, 4),
 
     /**
      * <tt>BSTR*</tt>.
@@ -35,10 +36,9 @@ public enum NativeType {
      * TODO: support StringBuffer
      * <p>
      * Expected Java type:
-     *      {@link Holder}&lt;String&gt;
+     * {@link Holder}&lt;String&gt;
      */
-    BSTR_ByRef(1|BYREF,4),
-
+    BSTR_ByRef(1 | BYREF, 4),
 
     /**
      * <tt>LPWSTR</tt>.
@@ -46,7 +46,7 @@ public enum NativeType {
      * More concretely, it becomes a L'\0'-terminated
      * UTF-16LE format.
      */
-    Unicode(2,4),
+    Unicode(2, 4),
     /**
      * String will be marshaled as "char*".
      *
@@ -61,66 +61,68 @@ public enum NativeType {
      * a typical Japanese Windows system, this is
      * Shift-JIS.
      */
-    CSTR(3,4),
+    CSTR(3, 4),
 
     /**
      * <tt>INT8</tt> (byte).
      *
      * <p>
      * Expected Java type:
-     *      byte
-     *      {@link Number}
+     * byte
+     * {@link Number}
      */
-    Int8(100,1),
-    
+    Int8(100, 1),
+
     /**
      * {@link #Int8} passed by reference
      * TODO should we add enum message/unmessage?
      */
-    Int8_ByRef(100|BYREF,1), //FIXME: BYREF -> pointer size is 4 bytes
-    
+    Int8_ByRef(100 | BYREF, 1), // FIXME: BYREF -> pointer size is 4 bytes
+
     /**
      * <tt>INT16</tt> (short).
      *
      * <p>
      * Expected Java type:
-     *      short
-     *      {@link Number}
+     * short
+     * {@link Number}
      */
-    Int16(101,2){
+    Int16(101, 2) {
         @Override
-        Object toNative(Object param) {
-            if(param instanceof Enum){
-                Enum e = (Enum) param;
+        Object toNative(final Object param) {
+            if (param instanceof Enum) {
+                final Enum e = (Enum) param;
                 return (short) EnumDictionary.get(e.getClass()).value(e);
             }
             return param;
         }
+
         @Override
-        Object toJava(Class<?> signature, Type genericSignature, Object param) {
-            if(param instanceof Enum){
-                return EnumDictionary.get((Class<? extends Enum>)signature).constant((Short)param);
+        Object toJava(final Class<?> signature, final Type genericSignature, final Object param) {
+            if (param instanceof Enum) {
+                return EnumDictionary.get((Class<? extends Enum>) signature).constant((Short) param);
             }
             return param;
         }
     },
-    
+
     /**
      * {@link #Int16} passed by reference
      */
-    Int16_ByRef(101|BYREF,2){
+    Int16_ByRef(101 | BYREF, 2) {
         @Override
-        Object toNative(Object param) {
-            if(param instanceof Enum){
-                Enum e = (Enum) param;
+        Object toNative(final Object param) {
+            if (param instanceof Enum) {
+                final Enum e = (Enum) param;
                 return (short) EnumDictionary.get(e.getClass()).value(e);
             }
             return param;
         }
+
         @Override
-        Object toJava(Class<?> signature, Type genericSignature, Object param) {
-            if(param instanceof Enum){
-                return EnumDictionary.get((Class<? extends Enum>)signature).constant((Short)param);
+        Object toJava(final Class<?> signature, final Type genericSignature, final Object param) {
+            if (param instanceof Enum) {
+                return EnumDictionary.get((Class<? extends Enum>) signature).constant((Short) param);
             }
             return param;
         }
@@ -134,39 +136,43 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      int
-     *      {@link Number}
-     *      {@link Enum} (see {@link ComEnum})
+     * int
+     * {@link Number}
+     * {@link Enum} (see {@link ComEnum})
      */
-    Int32(102,4) {
+    Int32(102, 4) {
         // the native code will see the raw pointer value as Integer
-        Object toNative(Object param) {
-            if(param instanceof Enum){
-                Enum e = (Enum) param;
+        @Override
+        Object toNative(final Object param) {
+            if (param instanceof Enum) {
+                final Enum e = (Enum) param;
                 return EnumDictionary.get(e.getClass()).value(e);
             }
             return param;
         }
 
-        Object toJava(Class<?> type, Type genericSignature, Object param) {
-            if( Enum.class.isAssignableFrom(type) ) {
-                return EnumDictionary.get((Class<? extends Enum>)type).constant((Integer)param);
+        @Override
+        Object toJava(final Class<?> type, final Type genericSignature, final Object param) {
+            if (Enum.class.isAssignableFrom(type)) {
+                return EnumDictionary.get((Class<? extends Enum>) type).constant((Integer) param);
             }
             return param;
         }
     },
-    Int32_ByRef(102|BYREF,4) {
-        Object toNative(Object param) {
-            if(param instanceof Enum){
-                Enum e = (Enum) param;
+    Int32_ByRef(102 | BYREF, 4) {
+        @Override
+        Object toNative(final Object param) {
+            if (param instanceof Enum) {
+                final Enum e = (Enum) param;
                 return EnumDictionary.get(e.getClass()).value(e);
             }
             return param;
         }
 
-        Object toJava(Class<?> type, Type genericSignature, Object param) {
-            if( Enum.class.isAssignableFrom(type) ) {
-                return EnumDictionary.get((Class<? extends Enum>)type).constant((Integer)param);
+        @Override
+        Object toJava(final Class<?> type, final Type genericSignature, final Object param) {
+            if (Enum.class.isAssignableFrom(type)) {
+                return EnumDictionary.get((Class<? extends Enum>) type).constant((Integer) param);
             }
             return param;
         }
@@ -178,10 +184,10 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      boolean
-     *      {@link Boolean}
+     * boolean
+     * {@link Boolean}
      */
-    Bool(103,4),
+    Bool(103, 4),
 
     /**
      * The native type is 'VARIANT_BOOL' where TRUE=1 and FALSE=0.
@@ -189,11 +195,11 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      boolean
-     *      {@link Boolean}
+     * boolean
+     * {@link Boolean}
      */
-    VariantBool(104,2),
-    VariantBool_ByRef(104|BYREF,4),
+    VariantBool(104, 2),
+    VariantBool_ByRef(104 | BYREF, 4),
 
     /**
      * Marshalled as 64-bit integer.
@@ -203,80 +209,86 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      long
-     *      {@link Number}
+     * long
+     * {@link Number}
      */
-    Int64(105,8), // should we add enum message/unmessage?
-    Int64_ByRef(105|BYREF,8),
+    Int64(105, 8), // should we add enum message/unmessage?
+    Int64_ByRef(105 | BYREF, 8),
 
     /**
      * <tt>float</tt>.
      *
      * <p>
      * Expected Java type:
-     *      boolean
-     *      {@link Number}
+     * boolean
+     * {@link Number}
      */
-    Float(120,4),
-    Float_ByRef(120|BYREF,4),
+    Float(120, 4),
+    Float_ByRef(120 | BYREF, 4),
 
     /**
      * <tt>double</tt>.
      *
      * <p>
      * Expected Java type:
-     *      boolean
-     *      {@link Number}
+     * boolean
+     * {@link Number}
      */
-    Double(121,8),
-    Double_ByRef(121|BYREF,4),
+    Double(121, 8),
+    Double_ByRef(121 | BYREF, 4),
 
     /**
      * Used only with {@link ReturnValue} for returning
      * HRESULT of the method invocation as "int".
      */
-    HRESULT(200,4),
+    HRESULT(200, 4),
 
     /**
      * The native type is determined from the Java method return type.
      * See the documentation for more details.
      * TODO: link to the doc.
      */
-    Default(201,9999),
+    Default(201, 9999),
 
     /**
      * COM interface pointer.
      *
      * <p>
      * Expected Java type:
-     *      {@link Com4jObject}
+     * {@link Com4jObject}
      */
-    ComObject(300,4) {
+    ComObject(300, 4) {
         // the native code will see the raw pointer value as Long
-        Object toNative(Object param) {
-            if(param==null)
+        @Override
+        Object toNative(final Object param) {
+            if (param == null) {
                 return 0L;
-            return ((Com4jObject)param).getPointer();
+            }
+            return ((Com4jObject) param).getPointer();
         }
 
-        Object toJava(Class<?> type, Type genericSignature, Object param) {
-            if(param==null)     return null;
-            if(type==Iterator.class) {
+        @Override
+        Object toJava(final Class<?> type, final Type genericSignature, final Object param) {
+            if (param == null) {
+                return null;
+            }
+            if (type == Iterator.class) {
                 Class<?> itemType = Object.class;
-                if(genericSignature instanceof ParameterizedType) {
-                    ParameterizedType pt = (ParameterizedType) genericSignature;
-                    Type it = pt.getActualTypeArguments()[0];
-                    if(it instanceof Class)
-                        itemType = (Class<?>)it;
+                if (genericSignature instanceof ParameterizedType) {
+                    final ParameterizedType pt = (ParameterizedType) genericSignature;
+                    final Type it = pt.getActualTypeArguments()[0];
+                    if (it instanceof Class) {
+                        itemType = (Class<?>) it;
+                    }
                 }
-                Com4jObject base = Wrapper.create((Long) param);
-                IEnumVARIANT enumVar = base.queryInterface(IEnumVARIANT.class);
+                final Com4jObject base = Wrapper.create((Long) param);
+                final IEnumVARIANT enumVar = base.queryInterface(IEnumVARIANT.class);
                 base.dispose();
-                return new ComCollection(itemType,enumVar);
+                return new ComCollection(itemType, enumVar);
             }
             // interface pointers we get from out parameters are owned by the caller,
             // so there's no need to do addRef
-            return Wrapper.create( (Class<? extends Com4jObject>)type, (Long)param );
+            return Wrapper.create((Class<? extends Com4jObject>) type, (Long) param);
         }
     },
 
@@ -285,17 +297,20 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      {@code Holder<ComObject>}
+     * {@code Holder<ComObject>}
      */
-    ComObject_ByRef(300|BYREF,4) {
+    ComObject_ByRef(300 | BYREF, 4) {
         // the native code will see the raw pointer value as Integer
-        Object toNative(Object param) {
-            Holder h = (Holder)param;
+        @Override
+        Object toNative(final Object param) {
+            final Holder h = (Holder) param;
             h.value = ComObject.toNative(h.value);
             return h;
         }
-        Object toJava(Class<?> type, Type genericSignature, Object param) {
-            Holder h = (Holder)param;
+
+        @Override
+        Object toJava(final Class<?> type, final Type genericSignature, final Object param) {
+            final Holder h = (Holder) param;
             h.value = ComObject.toNative(h.value);
             return h;
         }
@@ -310,17 +325,22 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      {@link GUID}
+     * {@link GUID}
      */
-    GUID(301,4) {
+    GUID(301, 4) {
         // pass in the value as two longs
-        Object toNative(Object param) {
-            GUID g = (GUID)param;
+        @Override
+        Object toNative(final Object param) {
+            final GUID g = (GUID) param;
             return g.v;
         }
-        Object toJava(Class<?> signature, Type genericSignature, Object param) {
-            if(param==null)     return null;
-            return new GUID( (long[])param );
+
+        @Override
+        Object toJava(final Class<?> signature, final Type genericSignature, final Object param) {
+            if (param == null) {
+                return null;
+            }
+            return new GUID((long[]) param);
         }
     },
 
@@ -329,8 +349,8 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      {@link Variant}
-     *      {@link Object}
+     * {@link Variant}
+     * {@link Object}
      *
      * <p>
      * When the Java type is {@link Object}, the type of the created
@@ -340,54 +360,54 @@ public enum NativeType {
      *
      * <table border=1>
      * <tr>
-     *  <td>Java type
-     *  <td>COM VARIANT type
+     * <td>Java type
+     * <td>COM VARIANT type
      * <tr>
-     *  <td>{@link Boolean} / boolean
-     *  <td>VT_BOOL
+     * <td>{@link Boolean} / boolean
+     * <td>VT_BOOL
      * <tr>
-     *  <td>{@link String}
-     *  <td>VT_BSTR
+     * <td>{@link String}
+     * <td>VT_BSTR
      * <tr>
-     *  <td>{@link Float} / float
-     *  <td>VT_R4
+     * <td>{@link Float} / float
+     * <td>VT_R4
      * <tr>
-     *  <td>{@link Double} / double
-     *  <td>VT_R8
+     * <td>{@link Double} / double
+     * <td>VT_R8
      * <tr>
-     *  <td>{@link Short} / short
-     *  <td>VT_I2
+     * <td>{@link Short} / short
+     * <td>VT_I2
      * <tr>
-     *  <td>{@link Integer} / int
-     *  <td>VT_I4
+     * <td>{@link Integer} / int
+     * <td>VT_I4
      * <tr>
-     *  <td>{@link Long} / long
-     *  <td>VT_I8
+     * <td>{@link Long} / long
+     * <td>VT_I8
      * <tr>
-     *  <td>{@link Com4jObject} or its derived types
-     *  <td>VT_UNKNOWN
+     * <td>{@link Com4jObject} or its derived types
+     * <td>VT_UNKNOWN
      * </table>
      * TODO: expand the list
      */
-    VARIANT(302,16) {
+    VARIANT(302, 16) {
         @Override
-        Object toNative(Object param) {
-            if(param instanceof Enum){
-                Enum e = (Enum) param;
+        Object toNative(final Object param) {
+            if (param instanceof Enum) {
+                final Enum e = (Enum) param;
                 return EnumDictionary.get(e.getClass()).value(e);
             }
             return param;
         }
 
         @Override
-        Object toJava(Class<?> signature, Type genericSignature, Object param) {
-            if(param instanceof Variant) {
-                Variant v = (Variant)param;
-                Object r = v.convertTo(signature);
+        Object toJava(final Class<?> signature, final Type genericSignature, final Object param) {
+            if (param instanceof Variant) {
+                final Variant v = (Variant) param;
+                final Object r = v.convertTo(signature);
                 v.clear();
                 return r;
-            } else if(param instanceof Enum){
-                return EnumDictionary.get((Class<? extends Enum>)signature).constant((Integer)param);
+            } else if (param instanceof Enum) {
+                return EnumDictionary.get((Class<? extends Enum>) signature).constant((Integer) param);
             }
             return param;
         }
@@ -400,20 +420,20 @@ public enum NativeType {
      * This works like {@link #VARIANT}, except that a reference
      * is passed, instead of a VARIANT itself.
      */
-    VARIANT_ByRef(302|BYREF,4) {
+    VARIANT_ByRef(302 | BYREF, 4) {
         @Override
-        Object toNative(Object param) {
-            if(param instanceof Enum){
-                Enum e = (Enum) param;
+        Object toNative(final Object param) {
+            if (param instanceof Enum) {
+                final Enum e = (Enum) param;
                 return EnumDictionary.get(e.getClass()).value(e);
             }
             return param;
         }
 
         @Override
-        Object toJava(Class<?> signature, Type genericSignature, Object param) {
-            if(param instanceof Enum){
-                return EnumDictionary.get((Class<? extends Enum>)signature).constant((Integer)param);
+        Object toJava(final Class<?> signature, final Type genericSignature, final Object param) {
+            if (param instanceof Enum) {
+                return EnumDictionary.get((Class<? extends Enum>) signature).constant((Integer) param);
             }
             return param;
         }
@@ -424,36 +444,45 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      {@link Com4jObject}
+     * {@link Com4jObject}
      */
-    Dispatch(303,4) {
+    Dispatch(303, 4) {
         // the native code will see the raw pointer value as Long
-        Object toNative(Object param) {
-            if(param==null) return 0L;
-            long ptr = ((Com4jObject)param).getPointer();
-            long disp = COM4J.queryInterface( ptr, COM4J.IID_IDispatch );
+        @Override
+        Object toNative(final Object param) {
+            if (param == null) {
+                return 0L;
+            }
+            final long ptr = ((Com4jObject) param).getPointer();
+            final long disp = COM4J.queryInterface(ptr, COM4J.IID_IDispatch);
             return disp;
         }
 
-        Object toJava(Class<?> type, Type genericSignature, Object param) {
-            if(param==null)     return null;
-            long disp = (Long)param;
-            if(disp==0)      return null;
+        @Override
+        Object toJava(final Class<?> type, final Type genericSignature, final Object param) {
+            if (param == null) {
+                return null;
+            }
+            final long disp = (Long) param;
+            if (disp == 0) {
+                return null;
+            }
 
-            Class<? extends Com4jObject> itf = (Class<? extends Com4jObject>) type;
-            Com4jObject r = Wrapper.create(itf, Native.queryInterface(disp, COM4J.getIID(itf)) );
+            final Class<? extends Com4jObject> itf = (Class<? extends Com4jObject>) type;
+            final Com4jObject r = Wrapper.create(itf, Native.queryInterface(disp, COM4J.getIID(itf)));
 
-            Native.release( disp );
+            Native.release(disp);
             return r;
         }
-        
-        void cleanupNative(Object pDisp) {
-        	if(pDisp != null) {
-        		Long l = (Long)pDisp;
-        		if(l.longValue() != 0) {
-        			Native.release(l);
-        		}
-        	}
+
+        @Override
+        void cleanupNative(final Object pDisp) {
+            if (pDisp != null) {
+                final Long l = (Long) pDisp;
+                if (l.longValue() != 0) {
+                    Native.release(l);
+                }
+            }
         }
     },
 
@@ -466,11 +495,10 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      direct {@link java.nio.Buffer}s ({@link java.nio.Buffer}s created from methods like
-     *      {@link java.nio.ByteBuffer#allocateDirect(int)}
+     * direct {@link java.nio.Buffer}s ({@link java.nio.Buffer}s created from methods like
+     * {@link java.nio.ByteBuffer#allocateDirect(int)}
      */
-    PVOID(304,4),
-
+    PVOID(304, 4),
 
     /**
      * <tt>void**</tt>.
@@ -480,10 +508,10 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      {@link Holder}&lt;{@link java.nio.Buffer}&gt; ({@link java.nio.Buffer}s created from methods like
-     *      {@link java.nio.ByteBuffer#allocateDirect(int)}
+     * {@link Holder}&lt;{@link java.nio.Buffer}&gt; ({@link java.nio.Buffer}s created from methods like
+     * {@link java.nio.ByteBuffer#allocateDirect(int)}
      */
-    PVOID_ByRef(304|BYREF,4),
+    PVOID_ByRef(304 | BYREF, 4),
 
     /**
      * <tt>DATE</tt>.
@@ -491,45 +519,47 @@ public enum NativeType {
      * See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore/html/_core_The_DATE_Type.asp
      * <p>
      * Expected Java type:
-     *      {@link java.util.Date}
-     *      {@link Calendar}
+     * {@link java.util.Date}
+     * {@link Calendar}
      */
-    Date(400,8) {
+    Date(400, 8) {
         // the native code will see the raw pointer value as Integer
-        Object toNative(Object param) {
+        @Override
+        Object toNative(final Object param) {
             java.util.Date dt;
-            if( param instanceof Calendar ) {
-                dt = ((Calendar)param).getTime();
+            if (param instanceof Calendar) {
+                dt = ((Calendar) param).getTime();
             } else {
-                dt = (java.util.Date)param;
+                dt = (java.util.Date) param;
             }
 
             // the number of milliseconds since January 1, 1970, 00:00:00 GMT
             long t = dt.getTime();
             // the number of milliseconds since January 1, 1970, 00:00:00 Local Time
-            t  -= dt.getTimezoneOffset()*60*1000;
+            t -= dt.getTimezoneOffset() * 60 * 1000;
 
             // the number of milliseconds since December 30, 1899, 00:00:00 Local Time
             t += 2209161600000L;
 
             // DATE is an offset from "30 December 1899"
-            if(t<0) {
+            if (t < 0) {
                 // -0.3 -> -0.7
-                long offset = -(t%MSPD);    // TODO: check
-                t = t-MSPD+offset;
+                final long offset = -(t % MSPD); // TODO: check
+                t = t - MSPD + offset;
             }
-            double d = ((double)t)/MSPD;
+            final double d = (double) t / MSPD;
             return d;
         }
 
-        Object toJava(Class<?> signature, Type genericSignature, Object param) {
-            double d = (Double)param;
-            long t = (long)(d*MSPD);
+        @Override
+        Object toJava(final Class<?> signature, final Type genericSignature, final Object param) {
+            final double d = (Double) param;
+            long t = (long) (d * MSPD);
             t -= 2209161600000L;
-            t -= defaultTimeZone.getOffset(t);  // convert back to UTC
-            java.util.Date dt = new java.util.Date(t);
-            if(Calendar.class.isAssignableFrom(signature)) {
-                GregorianCalendar cal = new GregorianCalendar();
+            t -= defaultTimeZone.getOffset(t); // convert back to UTC
+            final java.util.Date dt = new java.util.Date(t);
+            if (Calendar.class.isAssignableFrom(signature)) {
+                final GregorianCalendar cal = new GregorianCalendar();
                 cal.setTime(dt);
                 return cal;
             } else {
@@ -552,11 +582,10 @@ public enum NativeType {
      *
      * <p>
      * Expected Java type:
-     *      {@link java.math.BigDecimal}
+     * {@link java.math.BigDecimal}
      */
-    Currency(401,8),
-    Currency_ByRef(401|BYREF,8), // FIXME? ByRef should always have a size of four bytes, I think..
-
+    Currency(401, 8),
+    Currency_ByRef(401 | BYREF, 8), // FIXME? ByRef should always have a size of four bytes, I think..
 
     /**
      * <tt>SAFEARRAY</tt>.
@@ -569,22 +598,21 @@ public enum NativeType {
      * is automatically derived from the component type of the Java array.
      * This inference is defined as follows:
      * <ul>
-     *  <li>boolean[] -> SAFEARRAY(VT_BOOL)
-     *  <li>byte[] -> SAFEARRAY(VT_UI1)
-     *  <li>char[] -> SAFEARRAY(VT_UI2)  (??? is this right?)
-     *  <li>short[] -> SAFEARRAY(VT_I2)
-     *  <li>int[] -> SAFEARRAY(VT_I4)
-     *  <li>long[] -> SAFEARRAY(VT_I8)
-     *  <li>float[] -> SAFEARRAY(VT_R4)
-     *  <li>double[] -> SAFEARRAY(VT_R8)
+     * <li>boolean[] -> SAFEARRAY(VT_BOOL)
+     * <li>byte[] -> SAFEARRAY(VT_UI1)
+     * <li>char[] -> SAFEARRAY(VT_UI2) (??? is this right?)
+     * <li>short[] -> SAFEARRAY(VT_I2)
+     * <li>int[] -> SAFEARRAY(VT_I4)
+     * <li>long[] -> SAFEARRAY(VT_I8)
+     * <li>float[] -> SAFEARRAY(VT_R4)
+     * <li>double[] -> SAFEARRAY(VT_R8)
      *
-     *  <li>Object[] -> SAFEARRAY(VT_VARIANT)
-     *  <li>String[] -> SAFEARRAY(VT_BSTR)
+     * <li>Object[] -> SAFEARRAY(VT_VARIANT)
+     * <li>String[] -> SAFEARRAY(VT_BSTR)
      * </ul>
      */
-    SafeArray(500,24),
-    SafeArray_ByRef(500|BYREF,4);
-
+    SafeArray(500, 24),
+    SafeArray_ByRef(500 | BYREF, 4);
 
     /**
      * Unique identifier of this constant.
@@ -597,15 +625,15 @@ public enum NativeType {
      */
     final int size;
 
-    private static final Map<Integer,NativeType> codeMap = new HashMap<Integer, NativeType>();
+    private static final Map<Integer, NativeType> codeMap = new HashMap<>();
 
     static {
-        for (NativeType nt : values()) {
-            codeMap.put(nt.code,nt);
+        for (final NativeType nt : values()) {
+            codeMap.put(nt.code, nt);
         }
     }
 
-    NativeType( int code, int size ) {
+    NativeType(final int code, final int size) {
         this.code = code;
         this.size = size;
     }
@@ -618,27 +646,28 @@ public enum NativeType {
      *
      * @param param can be null.
      */
-    Object toNative(Object param) {
+    Object toNative(final Object param) {
         return param;
     }
+
     /**
      * Changes the parameter type before the method call returns.
      * <p>
      * The opposite of {@link #toNative(Object)}. Only useful for
      * BYREFs.
      *
-     * @param signature         the parameter type in its raw form.
-     * @param genericSignature  the parameter type in its generified form.
+     * @param signature the parameter type in its raw form.
+     * @param genericSignature the parameter type in its generified form.
      * @param param
      */
-    Object toJava(Class<?> signature, Type genericSignature, Object param) {
+    Object toJava(final Class<?> signature, final Type genericSignature, final Object param) {
         return param;
     }
-    
-    void cleanupNative(Object nativeValue) {
-    	//By default do nothing.  Some subclasses will use 
-    	//this hook to clean up any resources they allocated
-    	//in their toNative() call.
+
+    void cleanupNative(final Object nativeValue) {
+        // By default do nothing. Some subclasses will use
+        // this hook to clean up any resources they allocated
+        // in their toNative() call.
     }
 
     /**
@@ -646,19 +675,20 @@ public enum NativeType {
      * Otherwise null.
      */
     public final NativeType byRef() {
-        if(code==(code|BYREF))
+        if (code == (code | BYREF)) {
             return null;
-        return codeMap.get(code|BYREF);
+        }
+        return codeMap.get(code | BYREF);
     }
 
     public final NativeType getNoByRef() {
-        if(code==(code&(~BYREF)))
+        if (code == (code & ~BYREF)) {
             return null;
-        return codeMap.get(code&(~BYREF));
+        }
+        return codeMap.get(code & ~BYREF);
     }
 
-
-    private static final long MSPD = 24*60*60*1000;
+    private static final long MSPD = 24 * 60 * 60 * 1000;
     private static final TimeZone defaultTimeZone = TimeZone.getDefault();
 
 }

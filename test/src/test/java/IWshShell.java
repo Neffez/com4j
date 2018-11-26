@@ -1,11 +1,11 @@
 
+import static com4j.NativeType.BSTR;
+
 import com4j.Com4jObject;
 import com4j.IID;
-import com4j.VTID;
 import com4j.MarshalAs;
 import com4j.ReturnValue;
-import com4j.Holder;
-import static com4j.NativeType.*;
+import com4j.VTID;
 
 /**
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -16,9 +16,8 @@ public interface IWshShell extends Com4jObject {
     // IDispath 4
 
     @VTID(12)
-    @ReturnValue(index=1,type=BSTR)
-    String ExpandEnvironmentStrings(
-        @MarshalAs(BSTR) String param
-//        @MarshalAs(BSTR_ByRef) Holder<String> out
+    @ReturnValue(index = 1, type = BSTR)
+    String ExpandEnvironmentStrings(@MarshalAs(BSTR) String param
+    // @MarshalAs(BSTR_ByRef) Holder<String> out
     );
 }

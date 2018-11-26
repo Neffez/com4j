@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -13,11 +14,11 @@ public class Holder<T> {
      */
     public Holder() {
     }
-    
+
     /**
      * Initializes {@link #value} by the given value.
      */
-    public Holder(T value) {
+    public Holder(final T value) {
         this.value = value;
     }
 }

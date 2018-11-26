@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -8,7 +9,7 @@ class Const {
      * This constant is used to pass a value "by reference".
      *
      * It means that the corresponding Java method takes {@link Holder},
-     * and its value may be updated as a result of the method execution. 
+     * and its value may be updated as a result of the method execution.
      */
-    static final int BYREF=0x8000;
+    static final int BYREF = 0x8000;
 }

@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -12,7 +13,8 @@ package com4j;
 public interface ComObjectListener {
     /**
      * Called when a new COM object is created.
+     *
      * @param obj the newly created Com4jObject
      */
-    void onNewObject( Com4jObject obj );
+    void onNewObject(Com4jObject obj);
 }

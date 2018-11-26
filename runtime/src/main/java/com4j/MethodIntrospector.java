@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.lang.annotation.Annotation;
@@ -15,21 +16,23 @@ class MethodIntrospector {
     final Annotation[][] pa;
     final Type[] paramTypes;
 
-    protected MethodIntrospector(Method method) {
+    protected MethodIntrospector(final Method method) {
         this.method = method;
         this.pa = method.getParameterAnnotations();
         this.paramTypes = method.getGenericParameterTypes();
     }
 
-    protected final MarshalAs getMarshalAs(int idx) {
-        for( Annotation a : pa[idx] )
-            if( a instanceof MarshalAs )
-                return (MarshalAs)a;
+    protected final MarshalAs getMarshalAs(final int idx) {
+        for (final Annotation a : pa[idx]) {
+            if (a instanceof MarshalAs) {
+                return (MarshalAs) a;
+            }
+        }
         return null;
     }
 
-    protected final NativeType getParamConversation(int idx) {
-        MarshalAs ma = getMarshalAs(idx);
+    protected final NativeType getParamConversation(final int idx) {
+        final MarshalAs ma = getMarshalAs(idx);
         if (ma != null) {
             return ma.value();
         } else {

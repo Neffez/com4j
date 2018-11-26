@@ -1,3 +1,4 @@
+
 package com4j.tlbimp;
 
 import java.util.Collections;
@@ -18,70 +19,26 @@ class Escape {
     /**
      * Escapes the identifier if necessary.
      */
-    public static String escape( String identifier ) {
-        if(reservedWords.contains(identifier))
-            return '_'+identifier;
-        else
+    public static String escape(final String identifier) {
+        if (reservedWords.contains(identifier)) {
+            return '_' + identifier;
+        } else {
             return identifier;
+        }
     }
 
     static {
         // see http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#229308
-        String[] words = new String[] {
-            "abstract",
-            "assert",
-            "boolean",
-            "break",
-            "byte",
-            "case",
-            "catch",
-            "char",
-            "class",
-            "const",
-            "continue",
-            "default",
-            "do",
-            "double",
-            "else",
-            "enum",
-            "extends",
-            "final",
-            "finally",
-            "float",
-            "for",
-            "goto",
-            "if",
-            "implements",
-            "import",
-            "instanceof",
-            "int",
-            "interface",
-            "long",
-            "native",
-            "new",
-            "package",
-            "private",
-            "protected",
-            "public",
-            "return",
-            "short",
-            "static",
-            "strictfp",
-            "super",
-            "switch",
-            "synchronized",
-            "this",
-            "throw",
-            "throws",
-            "transient",
-            "try",
-            "void",
-            "volatile",
-            "while"
-        };
-        HashSet<String> s = new HashSet<String>();
-        for( String w : words )
+        final String[] words = new String[] { "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
+                "class", "const", "continue", "default", "do", "double", "else", "enum", "extends", "final", "finally",
+                "float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",
+                "native", "new", "package", "private", "protected", "public", "return", "short", "static", "strictfp",
+                "super", "switch", "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile",
+                "while" };
+        final HashSet<String> s = new HashSet<>();
+        for (final String w : words) {
             s.add(w);
+        }
         reservedWords = Collections.unmodifiableSet(s);
     }
 }

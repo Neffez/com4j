@@ -1,9 +1,11 @@
+
 package com4j;
 
-import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.PARAMETER;
-import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
@@ -23,9 +25,10 @@ import java.lang.annotation.Target;
 @Target(PARAMETER)
 @Documented
 public @interface DefaultValue {
-  /**
-   * Returns the default value of the annotated argument
-   * @return the default value of the annotated argument
-   */
+    /**
+     * Returns the default value of the annotated argument
+     *
+     * @return the default value of the annotated argument
+     */
     String value();
 }

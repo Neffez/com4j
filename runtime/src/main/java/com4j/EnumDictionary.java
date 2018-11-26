@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.util.Collections;
@@ -13,8 +14,7 @@ import java.util.WeakHashMap;
 abstract class EnumDictionary<T extends Enum<T>> {
     protected final Class<T> clazz;
 
-
-    private EnumDictionary(Class<T> clazz) {
+    private EnumDictionary(final Class<T> clazz) {
         this.clazz = clazz;
         assert clazz.isEnum();
     }
@@ -22,16 +22,16 @@ abstract class EnumDictionary<T extends Enum<T>> {
     /**
      * Looks up a dictionary from an enum class.
      */
-    public static <T extends Enum<T>>
-    EnumDictionary<T> get( Class<T> clazz ) {
+    public static <T extends Enum<T>> EnumDictionary<T> get(final Class<T> clazz) {
         EnumDictionary<T> dic = registry.get(clazz);
-        if(dic==null) {
-            boolean sparse = ComEnum.class.isAssignableFrom(clazz);
-            if(sparse)
-                dic = new Sparse<T>(clazz);
-            else
-                dic = new Continuous<T>(clazz);
-            registry.put(clazz,dic);
+        if (dic == null) {
+            final boolean sparse = ComEnum.class.isAssignableFrom(clazz);
+            if (sparse) {
+                dic = new Sparse<>(clazz);
+            } else {
+                dic = new Continuous<>(clazz);
+            }
+            registry.put(clazz, dic);
         }
         return dic;
     }
@@ -39,37 +39,38 @@ abstract class EnumDictionary<T extends Enum<T>> {
     /**
      * Convenience method to be invoked by JNI.
      */
-    static <T extends Enum<T>>
-    T get( Class<T> clazz, int v ) {
+    static <T extends Enum<T>> T get(final Class<T> clazz, final int v) {
         return get(clazz).constant(v);
     }
 
     /**
      * Gets the integer value for the given enum constant.
      */
-    abstract int value( Enum<T> t );
+    abstract int value(Enum<T> t);
+
     /**
      * Gets the enum constant object from its integer value.
      */
-    abstract T constant( int v );
-
+    abstract T constant(int v);
 
     /**
      * For enum constants that doesn't use any {@link ComEnum}.
      */
     static class Continuous<T extends Enum<T>> extends EnumDictionary<T> {
-        private T[] consts;
+        private final T[] consts;
 
-        private Continuous(Class<T> clazz) {
+        private Continuous(final Class<T> clazz) {
             super(clazz);
             consts = clazz.getEnumConstants();
         }
 
-        public int value(Enum<T> t ) {
+        @Override
+        public int value(final Enum<T> t) {
             return t.ordinal();
         }
 
-        public T constant( int v ) {
+        @Override
+        public T constant(final int v) {
             return consts[v];
         }
     }
@@ -78,30 +79,32 @@ abstract class EnumDictionary<T extends Enum<T>> {
      * For enum constants with {@link ComEnum}.
      */
     static class Sparse<T extends Enum<T>> extends EnumDictionary<T> {
-        private final Map<Integer,T> fromValue = new HashMap<Integer,T>();
+        private final Map<Integer, T> fromValue = new HashMap<>();
 
-        private Sparse(Class<T> clazz) {
+        private Sparse(final Class<T> clazz) {
             super(clazz);
 
-            T[] consts = clazz.getEnumConstants();
-            for( T v : consts ) {
-                fromValue.put(((ComEnum)v).comEnumValue(),v);
+            final T[] consts = clazz.getEnumConstants();
+            for (final T v : consts) {
+                fromValue.put(((ComEnum) v).comEnumValue(), v);
             }
         }
 
-        public int value(Enum<T> t ) {
-            return ((ComEnum)t).comEnumValue();
+        @Override
+        public int value(final Enum<T> t) {
+            return ((ComEnum) t).comEnumValue();
         }
 
-        public T constant( int v ) {
-            T t = fromValue.get(v);
-            if(t==null)
-                throw new IllegalArgumentException(clazz.getName()+" has no constant of the value "+v);
+        @Override
+        public T constant(final int v) {
+            final T t = fromValue.get(v);
+            if (t == null) {
+                throw new IllegalArgumentException(clazz.getName() + " has no constant of the value " + v);
+            }
             return t;
         }
     }
 
-
-    private static final  Map<Class<? extends Enum>,EnumDictionary> registry =
-        Collections.synchronizedMap(new WeakHashMap<Class<? extends Enum>,EnumDictionary>());
+    private static final Map<Class<? extends Enum>, EnumDictionary> registry = Collections
+            .synchronizedMap(new WeakHashMap<Class<? extends Enum>, EnumDictionary>());
 }

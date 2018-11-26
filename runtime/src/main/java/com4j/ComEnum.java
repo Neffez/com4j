@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -8,11 +9,13 @@ package com4j;
  * When an {@link Enum} class doesn't implement this interface,
  * its {@link Enum#ordinal()} is used as its numeric value.
  * </p>
+ *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
  */
 public interface ComEnum {
     /**
      * The integer assigned to this constant.
+     *
      * @return the value of the enum constant
      */
     int comEnumValue();

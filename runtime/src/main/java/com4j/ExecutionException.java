@@ -1,3 +1,4 @@
+
 package com4j;
 
 /**
@@ -8,11 +9,11 @@ package com4j;
 
 @SuppressWarnings("serial")
 public class ExecutionException extends RuntimeException {
-    public ExecutionException(String message, Throwable cause) {
+    public ExecutionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public ExecutionException(Throwable cause) {
+    public ExecutionException(final Throwable cause) {
         super(cause);
     }
 }

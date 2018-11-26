@@ -1,3 +1,4 @@
+
 package com4j;
 
 import java.lang.ref.ReferenceQueue;
@@ -7,7 +8,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 
 /**
  * Thread managed by com4j.
@@ -37,17 +37,19 @@ import java.util.Set;
  */
 public final class ComThread extends Thread {
 
-	public static int GARBAGE_COLLECTION_INTERVAL = 10;
-    
-	/**
+    public static int GARBAGE_COLLECTION_INTERVAL = 10;
+
+    /**
      * Used to associate a {@link ComThread} for every thread.
      */
     private static final ThreadLocal<ComThread> map = new ThreadLocal<ComThread>() {
+        @Override
         public ComThread initialValue() {
-            if( isComThread() )
-                return (ComThread)Thread.currentThread();
-            else
+            if (isComThread()) {
+                return (ComThread) Thread.currentThread();
+            } else {
                 return new ComThread(Thread.currentThread());
+            }
         }
     };
 
@@ -64,21 +66,22 @@ public final class ComThread extends Thread {
     static void detach() {
         map.get().kill();
         try {
-          map.get().join();
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
+            map.get().join();
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
         map.remove();
     }
 
     /**
      * Constructs a new ComThread for the given peer and starts it.
+     *
      * @param peer The peer thread.
      */
-    private ComThread(Thread peer) {
-        super("ComThread for "+peer.getName());
+    private ComThread(final Thread peer) {
+        super("ComThread for " + peer.getName());
         this.peer = peer;
-        setDaemon(true);    // we don't want to block the JVM from exiting
+        setDaemon(true); // we don't want to block the JVM from exiting
         start();
     }
 
@@ -90,23 +93,23 @@ public final class ComThread extends Thread {
     /**
      * Tasks that need to be processed.
      */
-    private final List<Task<?>> taskList = Collections.synchronizedList((new LinkedList<Task<?>>()));// com4j issue 70
+    private final List<Task<?>> taskList = Collections.synchronizedList(new LinkedList<Task<?>>());// com4j issue 70
 
     /**
      * COM objects that this thread is managing. This thread needs to stick around until they are all gone,
      * even when the peer is dead, because other threads might still want to talk to these objects.
      */
-    private Set<NativePointerPhantomReference> liveComObjects = new HashSet<NativePointerPhantomReference>();
+    private final Set<NativePointerPhantomReference> liveComObjects = new HashSet<>();
 
     /**
      * Keeps track of wrappers that should be IUnknown::release-d.
      */
-    final ReferenceQueue<Wrapper> collectableObjects = new ReferenceQueue<Wrapper>();
-    
+    final ReferenceQueue<Wrapper> collectableObjects = new ReferenceQueue<>();
+
     /**
      * Listeners attached to this thread.
      */
-    private final List<ComObjectListener> listeners = new ArrayList<ComObjectListener>();
+    private final List<ComObjectListener> listeners = new ArrayList<>();
 
     /**
      * If set to true, this thread will commit suicide.
@@ -127,8 +130,8 @@ public final class ComThread extends Thread {
      * </p>
      */
     private boolean canExit() {
-        // lhs:forcible death <->  rhs:natural death
-        return die || (!peer.isAlive() && liveComObjects.isEmpty());
+        // lhs:forcible death <-> rhs:natural death
+        return die || !peer.isAlive() && liveComObjects.isEmpty();
     }
 
     /**
@@ -142,11 +145,12 @@ public final class ComThread extends Thread {
         // wait for it to die. if someone interrupts us, process that later.
         try {
             join();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 
+    @Override
     public void run() {
         threads.add(this);
         try {
@@ -159,34 +163,34 @@ public final class ComThread extends Thread {
     private void run0() {
         Native.coInitialize();
 
-        while(!canExit()) {
+        while (!canExit()) {
             lock.suspend(GARBAGE_COLLECTION_INTERVAL);
 
-            //Clean up any com objects that need releasing
+            // Clean up any com objects that need releasing
             collectGarbage();
 
             // do any scheduled tasks that need to be done
             while (!taskList.isEmpty()) {
-                Task<?> task = taskList.get(0);
+                final Task<?> task = taskList.get(0);
                 taskList.remove(0);
                 task.invoke();
-                
-                //Maybe the task produced some garbage...clean that up
+
+                // Maybe the task produced some garbage...clean that up
                 collectGarbage();
             }
         }
 
         collectGarbage();
-        
-        //And clobber any live COM objects that have not been dispose()'d to avoid
-        //leaking these objects on die
-        for(NativePointerPhantomReference ref : liveComObjects) {
-        	ref.clear();
-        	ref.releaseNative();
+
+        // And clobber any live COM objects that have not been dispose()'d to avoid
+        // leaking these objects on die
+        for (final NativePointerPhantomReference ref : liveComObjects) {
+            ref.clear();
+            ref.releaseNative();
         }
         liveComObjects.clear();
-        
-        //Kill the event handle we are holding in the lock.
+
+        // Kill the event handle we are holding in the lock.
         lock.dispose();
 
         Native.coUninitialize();
@@ -195,25 +199,26 @@ public final class ComThread extends Thread {
     /**
      * Cleans up any left over references
      */
-	private void collectGarbage() {
-		// dispose unused objects if any
-		NativePointerPhantomReference toCollect;
-		while((toCollect = (NativePointerPhantomReference)collectableObjects.poll()) != null) {
-		    liveComObjects.remove(toCollect);
-		    toCollect.clear();
-		    toCollect.releaseNative();
-		}
-	}
+    private void collectGarbage() {
+        // dispose unused objects if any
+        NativePointerPhantomReference toCollect;
+        while ((toCollect = (NativePointerPhantomReference) collectableObjects.poll()) != null) {
+            liveComObjects.remove(toCollect);
+            toCollect.clear();
+            toCollect.releaseNative();
+        }
+    }
 
     /**
      * Executes a {@link Task} in a {@link ComThread}
      * and returns its result.
+     *
      * @param task The task to be executed
      * @param <T> The type of the return value.
      * @return The result of the Task
      */
-    public <T> T execute(Task<T> task) {
-        synchronized(task) {
+    public <T> T execute(final Task<T> task) {
+        synchronized (task) {
             task.reset();
             // add it to the tail
             taskList.add(task);
@@ -223,19 +228,19 @@ public final class ComThread extends Thread {
 
             // wait for the completion
             try {
-            	while (!task.isDone()) {
-            		task.wait();
-            	}
-            } catch (InterruptedException e) {
-                task.exception = e; // we got interrupted, so task.result will be invalid! 
+                while (!task.isDone()) {
+                    task.wait();
+                }
+            } catch (final InterruptedException e) {
+                task.exception = e; // we got interrupted, so task.result will be invalid!
             }
 
-            if(task.exception!=null) {
-                Throwable e = task.exception;
+            if (task.exception != null) {
+                final Throwable e = task.exception;
                 task.exception = null;
                 throw new ExecutionException(e);
             } else {
-                T r = task.result;
+                final T r = task.result;
                 task.result = null;
                 return r;
             }
@@ -248,19 +253,21 @@ public final class ComThread extends Thread {
      * This method increases the live object count of this thread and fires an
      * {@link ComObjectListener#onNewObject(Com4jObject)} event to all listeners.
      * </p>
+     *
      * @param r The new {@link Com4jObject}
      */
-    public synchronized void addLiveObject( Com4jObject r ) {// TODO: why is this public?
-    	if(r instanceof Wrapper) {
-    		liveComObjects.add(((Wrapper)r).ref);
-    	}
-        
-        if(!listeners.isEmpty()) {
-            for( int i=listeners.size()-1; i>=0; i-- )
+    public synchronized void addLiveObject(final Com4jObject r) {// TODO: why is this public?
+        if (r instanceof Wrapper) {
+            liveComObjects.add(((Wrapper) r).ref);
+        }
+
+        if (!listeners.isEmpty()) {
+            for (int i = listeners.size() - 1; i >= 0; i--) {
                 listeners.get(i).onNewObject(r);
+            }
         }
     }
-    
+
     /**
      * Checks if the current thread is a {@link ComThread}.
      */
@@ -270,27 +277,32 @@ public final class ComThread extends Thread {
 
     /**
      * Adds a {@link ComObjectListener} to this {@link ComThread}
+     *
      * @param listener the new listener
-     * @throws IllegalArgumentException if the <code>listener</code> is <code>null</code> or if the listener is already registered.
+     * @throws IllegalArgumentException if the <code>listener</code> is <code>null</code> or if the listener is already
+     *     registered.
      */
-    public void addListener(ComObjectListener listener) {
-        if(listener==null)
+    public void addListener(final ComObjectListener listener) {
+        if (listener == null) {
             throw new IllegalArgumentException("listener is null");
-        if(listeners.contains(listener))
+        }
+        if (listeners.contains(listener)) {
             throw new IllegalArgumentException("can't register the same listener twice");
+        }
         listeners.add(listener);
     }
 
     /**
      * Removes the {@link ComObjectListener} from this {@link ComThread}
+     *
      * @param listener The listener to remove
      * @throws IllegalArgumentException if the listener was not registered to this {@link ComThread}
      */
-    public void removeListener(ComObjectListener listener) {
-        if(!listeners.remove(listener))
+    public void removeListener(final ComObjectListener listener) {
+        if (!listeners.remove(listener)) {
             throw new IllegalArgumentException("listener isn't registered");
+        }
     }
-
 
     /**
      * All living and running {@link ComThread}s.
@@ -299,19 +311,19 @@ public final class ComThread extends Thread {
 
     static {
         // before shut-down clean up all ComThreads
-        COM4J.addCom4JShutdownTask(new Runnable() {
-            public void run() {
-              // we need to synchronize the access to threads.
-              // Not just to avoid concurrent modification, but also to make sure, that a kill-task is not waiting forever for the
-              // thread to execute the task. (The thread might want to shut down itself concurrently, because the liveObjects dropped to zero.)
-              ComThread[] threadsSnapshot;
-              synchronized(threads) {
+        COM4J.addCom4JShutdownTask(() -> {
+            // we need to synchronize the access to threads.
+            // Not just to avoid concurrent modification, but also to make sure, that a kill-task is not waiting forever
+            // for the
+            // thread to execute the task. (The thread might want to shut down itself concurrently, because the
+            // liveObjects dropped to zero.)
+            ComThread[] threadsSnapshot;
+            synchronized (threads) {
                 threadsSnapshot = threads.toArray(new ComThread[threads.size()]);
-              }
+            }
 
-              for (ComThread thread : threadsSnapshot) {
-                  thread.kill();
-              }
+            for (final ComThread thread : threadsSnapshot) {
+                thread.kill();
             }
         });
     }

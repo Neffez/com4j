@@ -1,3 +1,4 @@
+
 package com4j.tlbimp.def;
 
 import com4j.ComEnum;
@@ -38,10 +39,11 @@ public enum VarType implements ComEnum {
 
     private final int value;
 
-    VarType(int value) {
-        this.value=value;
+    VarType(final int value) {
+        this.value = value;
     }
 
+    @Override
     public int comEnumValue() {
         return value;
     }
