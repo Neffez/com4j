@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -22,7 +23,8 @@
       <artifactId>args4j</artifactId>
       <version>2.0.8</version>
     </dependency>
-    <dependency><!-- for optional Ant task -->
+    <dependency>
+      <!-- for optional Ant task -->
       <groupId>ant</groupId>
       <artifactId>ant</artifactId>
       <version>1.6.5</version>
@@ -33,16 +35,16 @@
   <build>
     <plugins>
       <plugin>
-         <artifactId>maven-jar-plugin</artifactId>
-         <configuration>
-           <archive>
-             <manifest>
-               <mainClass>com4j.tlbimp.driver.Main</mainClass>
-               <addClasspath>true</addClasspath>
-             </manifest>
-           </archive>
-         </configuration>
-       </plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com4j.tlbimp.driver.Main</mainClass>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

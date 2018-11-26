@@ -1,25 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.maggu2810.3rdparty.com4j</groupId>
     <artifactId>com4j-parent</artifactId>
     <version>2.2-SNAPSHOT</version>
   </parent>
 
-	<artifactId>com4j-dist</artifactId>
-	<packaging>pom</packaging>
-	<version>2.2-SNAPSHOT</version>
+  <artifactId>com4j-dist</artifactId>
+  <version>2.2-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-	<name>com4j distribution</name>
+  <name>com4j distribution</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>maven-com4j-plugin</artifactId>
-     	<version>2.2-SNAPSHOT</version>
+      <version>2.2-SNAPSHOT</version>
     </dependency>
-	</dependencies>
+  </dependencies>
 
   <build>
     <plugins>
@@ -27,10 +28,10 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <phase>package</phase>
             <configuration>
               <descriptors>
                 <descriptor>assembly.xml</descriptor>

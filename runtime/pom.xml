@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -11,6 +12,11 @@
 
   <name>com4j</name>
 
+  <properties>
+    <mode>Release</mode>
+    <!-- set to Debug to bundle debug builds of the DLL -->
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -18,23 +24,19 @@
         <version>1.7</version>
         <executions>
           <execution>
-            <phase>generate-resources</phase>
-            <configuration>
-              <target>
-                <copy file="../native/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-x86.dll" />
-                <copy file="../native/x64/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-amd64.dll" />
-              </target>
-            </configuration>
             <goals>
               <goal>run</goal>
             </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <target>
+                <copy file="../native/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-x86.dll"></copy>
+                <copy file="../native/x64/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-amd64.dll"></copy>
+              </target>
+            </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-
-  <properties>
-    <mode>Release</mode><!-- set to Debug to bundle debug builds of the DLL -->
-  </properties>
 </project>
