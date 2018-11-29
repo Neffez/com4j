@@ -153,6 +153,7 @@ abstract class ComMethod {
         }
 
         // add the default/optional parameters
+        assert defValues != null; // Try to understand the defValsCount initialization ;)
         for (int i = 0; i < defValsCount; i++) {
             final int ind = defValues.optParamIndex()[i];
             params[ind] = defValues.nativeType()[i];
