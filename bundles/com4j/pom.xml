@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.maggu2810.3rdparty.com4j</groupId>
-    <artifactId>com4j-parent</artifactId>
+    <artifactId>com4j-bundles</artifactId>
     <version>0.1.1-SNAPSHOT</version>
   </parent>
 
@@ -15,6 +15,14 @@
     <mode>Release</mode>
     <!-- set to Debug to bundle debug builds of the DLL -->
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi.enroute</groupId>
+      <artifactId>osgi-api</artifactId>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -29,8 +37,8 @@
             <phase>generate-resources</phase>
             <configuration>
               <target>
-                <copy file="../native/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-x86.dll" />
-                <copy file="../native/x64/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-amd64.dll" />
+                <copy file="../../libs/native/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-x86.dll"></copy>
+                <copy file="../../libs/native/x64/${mode}/com4j.dll" tofile="target/classes/com4j/com4j-amd64.dll"></copy>
               </target>
             </configuration>
           </execution>

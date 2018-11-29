@@ -31,3 +31,4 @@ buildNumber.properties
 # Others
 bin/
 generated/
+*.bak

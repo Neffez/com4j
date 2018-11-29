@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>de.maggu2810.3rdparty.com4j</groupId>
-    <artifactId>com4j-parent</artifactId>
+    <artifactId>com4j-bundles</artifactId>
     <version>0.1.1-SNAPSHOT</version>
   </parent>
 

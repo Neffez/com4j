@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>de.maggu2810.3rdparty.com4j</groupId>
+    <artifactId>com4j-tests</artifactId>
+    <version>0.1.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>com4j-test</artifactId>
+  <packaging>${packaging}</packaging>
+
+  <name>com4j Tests</name>
+
+  <properties>
+    <packaging>pom</packaging>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>de.maggu2810.3rdparty.com4j</groupId>
+      <artifactId>com4j</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>Windows</family>
+        </os>
+      </activation>
+      <properties>
+        <packaging>jar</packaging>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>de.maggu2810.3rdparty.com4j</groupId>
+            <artifactId>com4j-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>gen</goal>
+                </goals>
+                <configuration>
+                  <!-- run regsvr32 Debug/com4j.dll to get this type library -->
+                  <libId>AEDD2B06-81EF-499d-A9D6-E32B3188B61A</libId>
+                  <package>com4j_idl</package>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

@@ -14,7 +14,7 @@ To declare the `tlbimp` task, include the following statement in your build scri
 
 The `tlbimp` task supports the following attributes.
 
-<table width=100% border=1>
+<table width="100%" border="1">
 <tr><td>
 	Attribute
 </td><td>
@@ -67,13 +67,13 @@ Multiple lib elements can be used in this situation to control where each of the
 
 This element can take the following attributes:
 
-<table border=1>
+<table border="1">
 
 <tr><td>
 	file
 </td><td>
 	A file that contains the type library to be processed.
-</td><td rowspan=2>
+</td><td rowspan="2">
 	One of two.
 </td></tr>
 
