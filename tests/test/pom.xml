@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.maggu2810.3rdparty.com4j</groupId>
     <artifactId>com4j-tests</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>com4j-test</artifactId>
