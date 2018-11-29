@@ -11,6 +11,8 @@ import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -614,6 +616,14 @@ public abstract class COM4J {
             final File dllFile = new File(classFile.getParentFile(), fileName);
             System.load(dllFile.getPath());
             return;
+        }
+
+        try (InputStream in = COM4J.class.getResourceAsStream("/com4j/" + fileName)) {
+            final Path dllPath = Files.createTempFile("com4j-", ".dll");
+            copyStream(in, new FileOutputStream(dllPath.toFile()));
+            System.load(dllPath.toString());
+            return;
+        } catch (final IOException e) {
         }
 
         final UnsatisfiedLinkError error = new UnsatisfiedLinkError("Unable to load com4j.dll");
