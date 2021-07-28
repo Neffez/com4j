@@ -55,7 +55,8 @@ pair<SafeArrayXducer::NativeType,VARTYPE> SafeArrayXducer::toNative2(
 			VT_VARIANT);
 	}
 
-	return pair<SAFEARRAY*,VARTYPE>(NULL,VT_EMPTY);
+//	return pair<SAFEARRAY*,VARTYPE>(NULL,VT_EMPTY);
+	return pair<SAFEARRAY*,VARTYPE>(static_cast<SAFEARRAY*>(NULL),VT_EMPTY);
 }
 
 SafeArrayXducer::JavaType SafeArrayXducer::toJava( JNIEnv* env, SAFEARRAY* value ) {

@@ -54,7 +54,7 @@ final class Win32Lock {
     }
 
     private static native void closeHandle(long eventHandle);
-    private static native int createEvent();
+    private static native long createEvent();
     private static native void activate0(long handle);
     private static native void suspend0(long handle);
     private static native void suspend1(long handle, int timeoutMillis);

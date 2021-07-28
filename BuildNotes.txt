@@ -1,0 +1,38 @@
+
+To build native library:
+
+1. Install JDK 1.8.0_XX, both 32-bit and 64-bit versions.
+
+2. Configure Visual Studio for Java headers and Libraries:
+
+    For each of {Debug,Release} and x64:
+
+        Project -> com4j Properties
+            Configuration Properties
+                VC++ Directories
+                    Include Directories
+                        C:\Program Files\Java\jdk1.8.0_XX\include
+                        C:\Program Files\Java\jdk1.8.0_XX\include\win32
+                    Library Directories
+                        C:\Program Files\Java\jdk1.8.0_XX\jre\bin
+
+    For each of {Debug,Release} and Win32:
+
+        Project -> com4j Properties
+            Configuration Properties
+                VC++ Directories
+                    Include Directories
+                        C:\Program Files (x86)\Java\jdk1.8.0_XX\include
+                        C:\Program Files (x86)\Java\jdk1.8.0_XX\include\win32
+                    Library Directories
+                        C:\Program Files (x86)\Java\jdk1.8.0_XX\jre\bin
+
+3. Build each of {Debug,Release} and {Win32,x64} in Visual Studio
+
+To build the JAR:
+
+    JAVA_HOME='C:\Program Files\Java\jdk1.8.0_XX'
+    export JAVA_HOME
+
+    mvn package -P release
+
