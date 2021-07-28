@@ -1,7 +1,31 @@
-Using com4j
-==========
+[![](https://jitpack.io/v/exceljava/com4j.svg)](https://jitpack.io/#exceljava/com4j)
 
-[Download com4j](https://github.com/kohsuke/com4j/downloads) or [access it from Maven repository](http://maven.jenkins-ci.org/content/repositories/releases/org/jvnet/com4j/com4j/)
+About
+=====
+
+This is a fork of [kohsuke/com4j](https://github.com/kohsuke/com4j) and contains some changes necessary for calling the Excel COM API from Java. All changes are raised as a PR in the original repo, as the intention is that this repo is only needed temporarily.
+
+Using com4j
+===========
+
+[Download com4j](https://github.com/exceljava/com4j/releases) or [access it from jitpack.io](https://jitpack.io/#exceljava/com4j)
+
+To add to a Maven project, add the following to your pom.xml (using the lastest release name for the artifactId)
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.exceljava.com4j</groupId>
+    <artifactId>com4j</artifactId>
+    <version>release-20190528</version>
+</dependency>
+```
 
 Building com4j
 ==============

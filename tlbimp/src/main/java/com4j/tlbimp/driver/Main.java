@@ -49,6 +49,15 @@ public class Main implements ErrorListener {
     @Option(name="-alwaysUseComEnums",usage="Always use ComEnum for generating enums")
     public boolean alwaysUseComEnums = false;
 
+    @Option(name="-addLibNameToPackageName",usage="Append lower-case library name to package")
+    public boolean addLibNameToPackageName = false;
+
+    @Option(name="-defaultLcid",usage="Default locale id for LCID parameters")
+    public Integer defaultLcid;
+
+    @Option(name="-generateDefaultMethodOverloads",usage="Generate default method overloads")
+    public boolean generateDefaultMethodOverloads = false;
+
     @Argument
     private List<String> files = new ArrayList<String>();
 
@@ -125,6 +134,9 @@ public class Main implements ErrorListener {
 
         driver.alwaysUseComEnums = alwaysUseComEnums;
         driver.renameGetterAndSetters = javaGetterSetterName;
+        driver.addLibNameToPackageName = addLibNameToPackageName;
+        driver.generateDefaultMethodOverloads = generateDefaultMethodOverloads;
+        driver.defaultLcid = defaultLcid;
 
         try {
             if(locale!=null)

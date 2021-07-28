@@ -357,13 +357,31 @@ public final class Variant extends Number {
     }
 
     /**
+     * Determine the correct size of {@link Variant}.
+     *
+     * The size of the variant depends on whether this is
+     * a 32 or 64 bit system due to pointers in the structure
+     * definition.  See https://docs.microsoft.com/en-gb/windows/desktop/api/oaidl/ns-oaidl-tagvariant
+     */
+    private static int variantSize() {
+	/* Typical os.arch values: `x86_64`, `amd64` */
+        String model = System.getProperty("os.arch");
+        if (model.indexOf("64") != -1) {
+            return 24;
+        }
+        return 16;
+    }
+
+    private static final int variantSize = variantSize();
+
+    /**
      * Creates an empty {@link Variant}.
      */
     public Variant() {
-        image = ByteBuffer.allocateDirect(16);
+        image = ByteBuffer.allocateDirect(variantSize);
         image.order(ByteOrder.LITTLE_ENDIAN);
         // The initial content of a buffer is, in general, undefined. See the documentation of java.nio.Buffer.
-        byte[] b = new byte[16]; // this initializes the array with zeros
+        byte[] b = new byte[variantSize]; // this initializes the array with zeros
         image.put(b); // this prints the zeros to the buffer to guarantee, that the buffer is initialized with zeros.
         image.position(0);
     }
@@ -739,14 +757,14 @@ public final class Variant extends Number {
     public <T extends Com4jObject> T object( final Class<T> type ) {
         // native method invocation changeType needs to happen in the COM thread, that is responsible for this variant
         // @see ComCollection#fetch
-        ComThread t = thread != null ? thread : ComThread.get();
-        return new Task<T>() {
+        ComThread t = thread != null ? thread : ComThreadMulti.get();
+        return t.execute(new Task<T>() {
             public T call() {
                 Com4jObject wrapper = convertTo(Com4jObject.class);
                 if(null == wrapper) {
                 	return null;
                 }
-                
+
                 T ret = wrapper.queryInterface(type);
                 wrapper.dispose();
                 return ret;

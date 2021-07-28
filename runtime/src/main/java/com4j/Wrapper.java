@@ -19,8 +19,8 @@ import java.util.WeakHashMap;
  *
  * <p>
  * Every wrapper owns {@link NativePointerPhantomReference} to itself. We'll have this reference queued
- * to {@link ComThread#collectableObjects} when GC determines that the object is no longer needed,
- * or we'll explicitly enqueue it when {@link #dispose()} is called. {@link ComThread} will periodically
+ * to {@link ComThread#getCollectableObjects} when GC determines that the object is no longer needed,
+ * or we'll explicitly enqueue it when {@link #dispose()} is called. {@link ComThreadMulti} will periodically
  * wake up and go through the queue to release interface pointers.
  *
  * @author Kohsuke Kawaguchi (kk@kohsuke.org)
@@ -79,12 +79,18 @@ final class Wrapper implements InvocationHandler, Com4jObject {
      * Wraps a new COM object. The pointer needs to be addRefed by the caller if needed.
      */
     private Wrapper(long ptr) {
-        if(ptr==0)   throw new IllegalArgumentException();
-        assert ComThread.isComThread();
+        if(ptr==0)
+            throw new IllegalArgumentException();
+
+        ComThread thread = Task.getComThread();
+        if (null == thread)
+            thread = ComThreadMulti.get();
+        assert thread.isCurrentThread();
 
         this.ptr = ptr;
-        thread = ComThread.get();
-        ref = new NativePointerPhantomReference(this, thread.collectableObjects, ptr);
+        this.thread = thread;
+
+        ref = new NativePointerPhantomReference(this, thread.getCollectableObjects(), ptr);
         thread.addLiveObject(this);
     }
 
@@ -280,7 +286,7 @@ final class Wrapper implements InvocationHandler, Com4jObject {
                     throw new ComException("This object doesn't have event source",-1);
                 GUID iid = COM4J.getIID(eventInterface);
                 Com4jObject cp = cpc.FindConnectionPoint(iid);
-                EventProxy<T> proxy = new EventProxy<T>(eventInterface, object);
+                EventProxy<T> proxy = new EventProxy<T>(eventInterface, object, thread);
                 proxy.nativeProxy = Native.advise(cp.getPointer(), proxy,iid.v[0], iid.v[1]);
 
                 // clean up resources to be nice
@@ -289,7 +295,7 @@ final class Wrapper implements InvocationHandler, Com4jObject {
 
                 return proxy;
             }
-        }.execute();
+        }.execute(thread);
     }
 
     @Override
